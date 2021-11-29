@@ -1,6 +1,7 @@
 # RIFEAutomationToolPython
 フレーム補間を行うオープンソースソフト、[RIFE-ncnn-Vulkan](https://github.com/nihui/rife-ncnn-vulkan)の使用を「少しだけ」簡略化するPythonツール<br>
-外部ライブラリは使用しておらず、Windows10 64bit / Python3.10.0で動作確認しています
+外部ライブラリは使用しておらず、Windows10 64bit / Python3.10.0で動作確認しています<br>
+ダウンロードは[こちら](https://github.com/ike62k/RIFEAutomationToolPython/releases)から
 
 # 注意事項
 1. 補完対象のパスに半角スペース(' ')が含まれているとうまく動作しません
