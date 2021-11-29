@@ -1,5 +1,5 @@
 # RIFEAutomationToolPython
-フレーム補間を行うオープンソースソフト、[RIFE-ncnn-Vulkan](https://github.com/nihui/rife-ncnn-vulkan)の使用を「少しだけ」簡略化するPythonツール
+フレーム補間を行うオープンソースソフト、[RIFE-ncnn-Vulkan](https://github.com/nihui/rife-ncnn-vulkan)の使用を「少しだけ」簡略化するPythonツール<br>
 外部ライブラリは使用しておらず、Windows10 64bit / Python3.10.0で動作確認しています
 
 # 注意事項
