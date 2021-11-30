@@ -1,6 +1,6 @@
-#RIFE AutomationTool Python Ver1.0 2021/11/29
+#RIFE AutomationTool Python Ver1.0.1 2021/11/30
 
-def mainfunc (douga,gui_hantei,rifemode,bairitsu,bitto,gazou,hinsitsu,sureddo):
+def mainfunc (douga,gui_hantei,rifemode,bairitsu,bitto,gazou,hinsitsu,sureddo,kodekku):
 
     import os
     import subprocess as sp
@@ -29,11 +29,12 @@ def mainfunc (douga,gui_hantei,rifemode,bairitsu,bitto,gazou,hinsitsu,sureddo):
     P_rifeusage= str(read_default.get("RIFEUSAGE")) #RIFEの補完時の並列処理数
     P_interpolation= str(read_default.get("INTERPOLATION")) #補完の倍率(初期値)
 
-    P_end_menu = bool(read_default.get("END_M")) #終了時に終了したことを伝えるか、str型ではなくbool型で
-    P_delete_menu = bool(read_default.get("DELETE_M")) #データを削除するかしないかのチェックをするか、str型ではなくbool型で
-    P_defaultdelete = bool(read_default.get("DELETE")) #チェックをスルーした際自動で削除するか、str型ではなくbool型で
-    P_interpolation_menu = bool(read_default.get("INTERPOLATION_M")) #倍率を確認するか、str型ではなくbool型で
+    P_end_menu = bool(int(read_default.get("END_M"))) #終了時に終了したことを伝えるか、str型ではなくbool型で
+    P_delete_menu = bool(int(read_default.get("DELETE_M"))) #データを削除するかしないかのチェックをするか、str型ではなくbool型で
+    P_defaultdelete = bool(int(read_default.get("DELETE"))) #チェックをスルーした際自動で削除するか、str型ではなくbool型で
+    P_interpolation_menu = bool(int(read_default.get("INTERPOLATION_M"))) #倍率を確認するか、str型ではなくbool型で
     P_guimode = gui_hantei #GUIで起動しているかCUIで起動しているか
+
 
     #P_framerate #元の動画のフレームレート
     #P_Aframerate #元の動画のフレームレート*補完の倍率
@@ -76,6 +77,8 @@ def mainfunc (douga,gui_hantei,rifemode,bairitsu,bitto,gazou,hinsitsu,sureddo):
         P_jpgquality = hinsitsu
 
         P_rifeusage = sureddo
+
+        P_codec = kodekku
 
 
     def  interpolationchecker(b):
