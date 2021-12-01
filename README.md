@@ -4,7 +4,7 @@
 本プログラムのダウンロードは[こちら](https://github.com/ike62k/RIFEAutomationToolPython/releases)から<br>
 
 このプログラムはCUIツールですが、[GUI動作をさせるプラグイン](https://github.com/ike62k/RATPython_simplegui)も用意しています。
-GUIダウンロードは[こちら](https://github.com/ike62k/RIFEAutomationToolPython/releases)から
+GUIダウンロードは[こちら](https://github.com/ike62k/RATPython_simplegui/releases)から
 
 # 注意事項
 1. 補完対象のパスに半角スペース(' ')が含まれているとうまく動作しません
