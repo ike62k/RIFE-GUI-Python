@@ -1,4 +1,4 @@
-#RIFE AutomationTool Python Ver1.1 2022/4
+#RIFE AutomationTool Python Ver1.2 2022/9/14
 
 def mainfunc (video,gui_mode,GUIsetting):
     import os
@@ -76,8 +76,11 @@ def mainfunc (video,gui_mode,GUIsetting):
 
     sp.run(f"ffprobe -i \"{video}\" -select_streams v:0 -show_entries stream=r_frame_rate -of csv > \"{os.path.dirname(__file__)}\\{directory[4]}\\framerate_data.txt\"", shell=True)
     framerate = open(f"{os.path.dirname(__file__)}\\{directory[4]}\\framerate_data.txt")
-    framerate = ((framerate.read()).split(",")[1]).split("/")[0]
-    Aframerate = int(int(framerate)*int(setting.interpolation))
+    framerate = (framerate.read()).split(",")[1]
+    framerate_child = framerate.split("/")[0]
+    framerate_parent = framerate.split("/")[1]
+    framerate = int(framerate_child) / int(framerate_parent)
+    Aframerate = float(framerate)*int(setting.interpolation)
 
     videodir = os.path.dirname(video)
     title = os.path.basename(video)
