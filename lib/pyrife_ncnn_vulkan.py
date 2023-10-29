@@ -40,6 +40,14 @@ class Pyrife_ncnn_vulkan():
     @output_folder.setter
     def output_folder(self, output_folder: str):
         self.__output_folder = output_folder
+
+    #出力ファイルの拡張子の変更と確認
+    @property
+    def output_extension(self) -> str:
+        return self.__output_extension
+    @output_extension.setter
+    def output_extension(self, output_extension: str):
+        self.__output_extension = output_extension
     
     #rife.exeの変更と確認
     @property
@@ -73,7 +81,7 @@ class Pyrife_ncnn_vulkan():
     def rifegpu(self, rifegpu: str):
         self.__rifegpu = rifegpu
 
-    #保管倍率の変更と確認
+    #補完倍率の変更と確認
     @property
     def riferatio(self) -> str:
         return self.__riferatio
@@ -93,6 +101,12 @@ class Pyrife_ncnn_vulkan():
             self.output_folder = self.config_data["DEFAULT"]["output_folder"]
         else:
             self.output_folder = self.config_data["USER"]["output_folder"]
+
+    def apply_output_extension_from_config(self):
+        if self.config_data["USER"]["output_extension"] == "":
+            self.output_extension = self.config_data["DEFAULT"]["output_extension"]
+        else:
+            self.output_extension = self.config_data["USER"]["output_extension"]
 
     def apply_rifeexe_from_config(self):
         if self.config_data["USER"]["rifeexe"] == "":
@@ -124,9 +138,11 @@ class Pyrife_ncnn_vulkan():
         else:
             self.ratio = self.config_data["USER"]["ratio"]
 
+    #configから各パラメータの全適用
     def apply_all_from_config(self):
         self.apply_input_folder_from_config()
         self.apply_output_folder_from_config()
+        self.apply_output_extension_from_config()
         self.apply_rifeexe_from_config()
         self.apply_rifever_from_config()
         self.apply_rifeusage_from_config()
@@ -157,7 +173,13 @@ class Pyrife_ncnn_vulkan():
             self.output_folder
         except:
             raise self.RifeError("\"output_folder\" is not set. \"output_folder\"が設定されていません")
-        
+
+    def _errorcheck_setoutputextension(self):
+        try:
+            self.output_extension
+        except:
+            raise self.RifeError("\"output_extension\" is not set. \"output_extension\"が設定されていません")
+
     def _errorcheck_setrifeexe(self):
         try:
             self.rifeexe
@@ -191,6 +213,7 @@ class Pyrife_ncnn_vulkan():
     def _errorcheck_all(self):
         self._errorcheck_setinputfolder()
         self._errorcheck_setoutputfolder()
+        self._errorcheck_setoutputextension()
         self._errorcheck_setrifeexe()
         self._errorcheck_setrifever()
         self._errorcheck_setrifeusage()
