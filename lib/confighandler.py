@@ -1,10 +1,10 @@
 import configparser
 
 class ConfigHandler():
-    def __init__(self, path: str):
-        self.config = configparser.ConfigParser()
+    def __init__(self, path: str, allow_no_value: bool = False):
+        self.config = configparser.ConfigParser(allow_no_value = allow_no_value)
         self.__path = path
-        self.config.read(self.__path)
+        self.config.read(self.__path, encoding="utf-8")
 
     def read_default(self) -> dict:
         self._errorcheck_isdefault()
