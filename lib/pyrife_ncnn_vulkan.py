@@ -1,5 +1,6 @@
 import subprocess
 import glob
+import os
 from lib.confighandler import ConfigHandler
 
 class Pyrife_ncnn_vulkan():
@@ -27,8 +28,10 @@ class Pyrife_ncnn_vulkan():
     def input_folder(self) -> str:
         return self.__input_folder
     @input_folder.setter
-    def input_folder(self, input_folder: str):
+    def input_folder(self, input_folder: str, make_directory:bool = True):
         self.__input_folder = input_folder
+        if make_directory:
+            os.makedirs(input_folder, exist_ok=True)
     @property
     def input_folder_nunber(self) -> int:
         return len(glob.glob(f"{self.input_folder}\\*"))
@@ -38,8 +41,10 @@ class Pyrife_ncnn_vulkan():
     def output_folder(self) -> str:
         return self.__output_folder
     @output_folder.setter
-    def output_folder(self, output_folder: str):
+    def output_folder(self, output_folder: str, make_directory: bool = True):
         self.__output_folder = output_folder
+        if make_directory:
+            os.makedirs(output_folder, exist_ok=True)
 
     #出力ファイルの拡張子の変更と確認
     @property
