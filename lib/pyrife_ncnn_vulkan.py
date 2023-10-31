@@ -158,7 +158,7 @@ class Pyrife_ncnn_vulkan():
     def run(self):
         self._errorcheck_all()
         subprocess.run(
-            f"{self.rifeexe} -i {self.input_folder}/ -o {self.output_folder}/ -m rife-{self.rifever}/ -j {self.rifeusage}", 
+            f"{self.rifeexe} -i {self.input_folder}/ -o {self.output_folder}/ -m rife-{self.rifever}/ -j {self.rifeusage}/ -f 2x_%010d.{self.output_extension}", 
             shell=True
             )
 
