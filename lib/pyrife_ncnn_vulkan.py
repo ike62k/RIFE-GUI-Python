@@ -10,6 +10,8 @@ class Pyrife_ncnn_vulkan():
         self.config = ConfigHandler(self.__config_path)
         self.__config_data: dict = self.config.read_all()
 
+    
+    #↓各パラメーターをコード上から操作する(ゲッターセッター)↓
     #コンフィグの変更と確認とロード(ファイルパス/中身)
     @property
     def config_path(self) -> str:
@@ -28,7 +30,7 @@ class Pyrife_ncnn_vulkan():
     def input_folder(self) -> str:
         return self.__input_folder
     @input_folder.setter
-    def input_folder(self, input_folder: str, make_directory:bool = True):
+    def input_folder(self, input_folder: str, make_directory:bool = False):
         self.__input_folder = input_folder
         if make_directory:
             os.makedirs(input_folder, exist_ok=True)
@@ -41,7 +43,7 @@ class Pyrife_ncnn_vulkan():
     def output_folder(self) -> str:
         return self.__output_folder
     @output_folder.setter
-    def output_folder(self, output_folder: str, make_directory: bool = True):
+    def output_folder(self, output_folder: str, make_directory: bool = False):
         self.__output_folder = output_folder
         if make_directory:
             os.makedirs(output_folder, exist_ok=True)
@@ -94,6 +96,7 @@ class Pyrife_ncnn_vulkan():
     def riferatio(self, riferatio: str):
         self.__riferatio = riferatio
     
+    #↓各パラメーターをconfigファイルから操作する↓
     #configファイルからの適応
     def apply_input_folder_from_config(self):
         if self.config_data["USER"]["input_folder"] == "":
@@ -155,6 +158,7 @@ class Pyrife_ncnn_vulkan():
         self.apply_ratio_from_config()
 
 
+    #rife-ncnn-vulkanを実行
     def run(self):
         self._errorcheck_all()
         subprocess.run(
@@ -162,8 +166,8 @@ class Pyrife_ncnn_vulkan():
             shell=True
             )
 
-
-    #エラー用クラス変数
+    #↓変数の存在チェックとそれに伴うエラー↓
+    #エラー用クラス
     class RifeError(Exception):
         pass
 
@@ -214,7 +218,8 @@ class Pyrife_ncnn_vulkan():
             self.ratio
         except:
             raise self.RifeError("\"ratio\" is not set. \"ratio\"が設定されていません")
-        
+    
+    #全変数の存在チェック
     def _errorcheck_all(self):
         self._errorcheck_setinputfolder()
         self._errorcheck_setoutputfolder()
