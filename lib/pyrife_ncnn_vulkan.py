@@ -30,7 +30,7 @@ class Pyrife_ncnn_vulkan():
     def input_folder(self) -> str:
         return self.__input_folder
     @input_folder.setter
-    def input_folder(self, input_folder: str, make_directory:bool = False):
+    def input_folder(self, input_folder: str, make_directory:bool = True):
         self.__input_folder = input_folder
         if make_directory:
             os.makedirs(input_folder, exist_ok=True)
@@ -43,7 +43,7 @@ class Pyrife_ncnn_vulkan():
     def output_folder(self) -> str:
         return self.__output_folder
     @output_folder.setter
-    def output_folder(self, output_folder: str, make_directory: bool = False):
+    def output_folder(self, output_folder: str, make_directory: bool = True):
         self.__output_folder = output_folder
         if make_directory:
             os.makedirs(output_folder, exist_ok=True)
@@ -162,7 +162,7 @@ class Pyrife_ncnn_vulkan():
     def run(self):
         self._errorcheck_all()
         subprocess.run(
-            f"{self.rifeexe} -i {self.input_folder}/ -o {self.output_folder}/ -m rife-{self.rifever}/ -j {self.rifeusage}/ -f 2x_%010d.{self.output_extension}", 
+            f"{self.rifeexe} -i {self.input_folder}/ -o {self.output_folder}/ -m rife-{self.rifever}/ -j {self.rifeusage}/ -f 2x%010d.{self.output_extension}", 
             shell=True
             )
 
