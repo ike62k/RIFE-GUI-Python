@@ -1,16 +1,13 @@
 import os
 from lib.pyrife_ncnn_vulkan import Pyrife_ncnn_vulkan
+from lib.pyffmpeg import Pyffmpeg
 from lib.confighandler import ConfigHandler
 
 os.chdir(os.path.dirname(__file__))
-rife = Pyrife_ncnn_vulkan(".\\setting\\pyrife_ncnn_vulkan.ini")
-rife.apply_all_from_config()
-print(rife.rifegpu)
-#print(rife.config_data)
-#print(rife.config_path)
-#print(rife.config_data["DEFAULT"]["rifeexe"])
-#rife.input_folder = ".\\target"
-#rife.output_folder = "testout"
-#print(rife.input_folder_nunber)
-#print(f"{rife.config_data['DEFAULT']['rifeexe']} -i {rife.input_folder}/ -o {rife.output_folder}")
-#print(rife.config_data["USER"]["rifever"] == "")
+#rife = Pyrife_ncnn_vulkan(".\\setting\\pyrife_ncnn_vulkan.ini")
+#rife.apply_all_from_config()
+#rife.run()
+
+ffmpeg = Pyffmpeg(".\\setting\\pyffmpeg.ini")
+ffmpeg.input_file = ".\\realtest_2x.mov"
+print(ffmpeg.search_framerate())

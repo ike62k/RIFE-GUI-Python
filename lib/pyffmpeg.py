@@ -93,9 +93,30 @@ class Pyffmpeg:
             self.option = self.config_data["USER"]["option"]
 
 
-    def run(self):
+    def video_to_image(self):
         self._errorcheck_all()
-        subprocess.run("", )
+        subprocess.run(
+            f"{self.ffmpegexe} -i {self.input_file} -an {self.output_file}",
+            shell=True
+            )
+        
+    def image_to_video(self):
+        self._errorcheck_all()
+        subprocess.run(
+            f"{self.ffmpegexe} -i {self.input_file}",
+            shell=True
+        )
+
+    def search_framerate(self):
+        #self._errorcheck_all()
+        self.__ffprobe = subprocess.run(
+            f"ffprobe -i {self.input_file} -v error -select_streams v:0 -show_entries stream=r_frame_rate -print_format csv",
+            shell=True,
+            capture_output=True,
+            text=True
+        )
+        print(self.__)
+        return self.__ffprobe.stdout.split(",")[1]
 
     class FFmpegError(Exception):
         pass
