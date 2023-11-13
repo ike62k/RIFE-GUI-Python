@@ -1,32 +1,92 @@
-# RIFEAutomationToolPython
-フレーム補間を行うオープンソースソフト、[RIFE-ncnn-Vulkan](https://github.com/nihui/rife-ncnn-vulkan)の使用を「少しだけ」簡略化するPythonツール<br>
-外部ライブラリは使用しておらず、Windows10/11 64bit / Python3.10.0で動作確認しています<br>
-本プログラムのダウンロードは[こちら](https://github.com/ike62k/RIFEAutomationToolPython/releases)から<br>
+# RIFE AUTOMATION TOOL PYTHON
+copyright 2023 びろーど(Veludo)
 
-このプログラムはCUIツールですが、[GUI動作をさせるプラグイン](https://github.com/ike62k/RATPython_simplegui)も用意しています。
-GUIダウンロードは[こちら](https://github.com/ike62k/RATPython_simplegui/releases)から
+## はじめに
+このプログラムは趣味の一環として作成されたものです。本ソフトウェアを使用したいかなる結果についても作者は責任を負いません。<br>
+このソフトウェアはMIT LICENSEにて提供されています。MIT LICENSEは添付しているLICENSEを参照してください。<br>
+本ソフトウェアはffmpeg及びffprobeを使用しています。使用しているのはLGPL版であり、動的リンクでの使用としているため本ソフトウェア自体はMIT LICENSEにて公開しています。<br>
+ffmpeg及びffprobeのライセンスは.\lib\ffmpeg\LGPL_LICENSE_for_ffmpeg.txtを参照してください。
 
-# 注意事項
-1. 補完対象のパスに半角スペース(' ')が含まれているとうまく動作しません
-2. 補完対象のパスにドット('.')が含まれているとうまく動作しません
-3. 補完対象が実行ファイルと違うドライブ(相対パスで位置を書き表せない位置)にあるファイルではうまく動作しません(修正予定)
-4. 'Shell = True'を使用しているので入力次第で予期しない動作を引き起こす可能性があります
-5. 同梱されているRATconfig.iniに初期値の設定があるため、先に環境に応じて設定をしてから使用してください
-6. このソフトウェアは趣味で制作されたものです。本ソフトウェアの使用によって引き起こされた全ての結果について作者は一切の責任を負いません
+## 動作(確認済み)環境
+- windows10 or windows11
+- Python 3.12(以前のVerでも動く可能性はあります※未検証)
+- (あったらいいな)Intel,AMD,NVIDIAの外付けGPU
 
-# 必要ソフトウェア
-1. [rife-ncnn-vulkan.exeと各種プロファイル](https://github.com/nihui/rife-ncnn-vulkan)
-2. [ffmpegとffprobe](https://www.ffmpeg.org/)
-3. [Python3](https://www.python.org/)
+## 使用させていただいているソフトウェア
+- [FFmpeg(LGPL)](https://github.com/BtbN/FFmpeg-Builds/releases/tag/autobuild-2023-11-11-12-54)
+- [FFprobe(LGPL)](https://github.com/BtbN/FFmpeg-Builds/releases/tag/autobuild-2023-11-11-12-54)
+- [RIFE-ncnn-Vulkan](https://github.com/nihui/rife-ncnn-vulkan/releases/tag/20221029)
 
-# 対応動画  
-入力ファイル : ffmpegで動画ファイルとして読み込めるほとんどすべての映像/音声形式  
-出力ファイル : コンテナフォーマット→入力ファイルと同じ / 映像コーデック→ユーザー指定 / 音声コーデック→ユーザー指定
-  
- # 使い方
-1. ダウンロードしたすべてのファイル、フォルダを同一フォルダ(※)にまとめる
-2. このレポジトリで配布されているファイルをPythonで実行
-3. 表示の指示に従って動画を指定する(記述は※のファイルからの絶対パス。ただし相対パスで表記できる位置にあることを推奨)
-  
-# はしがき
-そもそもこのファイルは個人的にめんどくさかった作業を簡略化させただけで、コードの無駄とかが多いのでそこらへんだけよろです
+## どんなソフトウェア？
+映像の前後コマから間のコマを生成するソフトウェア[RIFE-ncnn-Vulkan](https://github.com/nihui/rife-ncnn-vulkan)をより便利に活用するためのソフトウェアです。<br>
+FFmpegとRIFE-ncnn-Vulkanを組み合わせて、元動画を2倍補完したものを生成します。<br>
+動作にはWindows環境とそこで動作するPythonが必要です。Pythonの外部ライブラリは使用していません。<br>
+お好みのFFmpeg,FFProbeビルドを代わりに使用することも可能です。(ライセンスにはご注意ください)<br>
+
+## 使用出来る元動画ファイル
+- お使いのFFmpegにて映像streamを画像へとエンコードできるもの
+- 音声streamが含まれているもの(今後のアップデートで音声を含まない動画にも対応予定)
+- 映像総フレーム数が2~5000000000であるもの
+- 映像が極度に低ビットレートでないもの(効果が薄れます)
+- ファイル名及びファイルパスに` `(半角スペース)、`.`(ピリオド)があると正しく動作しません
+
+## 使い方
+1. Pythonをインストールします。
+2. 本プロジェクトのReleaseページからソースコードをダウンロードします。
+3. 適当な場所で展開します
+4. App.pyを実行します
+
+## 各種設定について
+本ソフトウェアでは、ユーザーごとの環境に合わせて柔軟に設定を操作できるよう、configファイルを設定しています。<br>
+全てのconfigファイルは.\setting内に存在します。<br>
+
+### 共通
+- configファイルは`[DEFAULT]`セクションと`[USER]`セクションによって構成されています。
+- `[USER]`値が空(`None`)の場合、ソフトウェアは`[DEFAULT]`セクションの値を参照します。
+- `[USER]`値が空(`None`)でない場合、ソフトウェアは`[USER]`セクションの値を参照します。
+- **自分自身で設定をする場合は`[USER]`セクションの値のみを書きかえる**ことを推奨します。
+
+### config.ini
+App.py起動用のconfigです。
+- `pyrife_ncnn_vulkan_config` 下記pyrife_ncnn_vulkan.iniの場所を指定します。
+- `pyffmpeg_config` 下記pyffmpeg.iniの場所を指定します
+
+### pyrife_ncnn_vulkan.ini
+RIFE-ncnn-Vulkan用のconfigです。
+- `input_folder` RIFEが処理する対象となる、補完処理前のフレームのあるフォルダを指定します。
+- `output_folder` RIFEが処理したあとの、補完処理後のフレーム出力先フォルダを指定します。
+- `output_extension` RIFEが処理したフレームのファイル形式を指定します。
+- `rifeexe` RIFE-ncnn-Vulkan.exeの場所を指定します。
+- `rifever` RIFEの補完に使用するモデルのバージョンを指定します。
+- `rifeusage` RIFEの動作スレッド数を指定します(多いとメモリ使用量が増えます)
+- `rifegpu` RIFEが使用するGPUのナンバーを指定します(-1でCPU処理)
+- `ratio` 補完倍率を指定します **※注：現段階では`ratio`に関わらず2倍で動作します(未実装)**
+
+### pyffmpeg.ini
+FFmpeg用のconfigです。
+- `input_file` 補完処理を行う元動画を指定します。
+- `input_folder` RIFEの補完処理が完了したあとのフレームが存在するフォルダを指定します。
+- `output_folder` RIFEに渡す、補完処理前のフレーム出力先フォルダを指定します。
+- `conplete_folder` 前処理が完了して完成した動画を出力するフォルダを指定します。
+- `ffmpegexe` FFmpeg.exeの場所を指定します。
+- `ffprobeexe` FFprobe.exeの場所を指定します。
+- `image_extension` RIFEに渡す、補完処理前のフレームのファイル形式を指定します。
+- `video_extension` 完成した動画のファイル形式を指定します。
+- `option` FFmpegのoptionを指定します。動画のコーデック、画質などを指定します。
+
+## 注意事項
+- FFmpeg,FFprobe,RIFE-ncnn-Vulkanは全て実行ファイルを`subprocess`で呼び出しています。
+    その際に、`shell=True`を使用しています。設定値にシェルがコマンドと誤認識する値があると、シェルインジェクションなどの危険性があります。
+- 著作権で保護された映像の加工及び公開は法律に反する場合があります。作者は責任を負いかねますので、使用方法にはお気をつけください。
+
+## 既知の不具合
+- 音声streamを含まない動画が処理できない問題
+- `subprocess`において`shell=True`を使用していることによる誤作動のリスク
+
+## 修正及び機能追加予定
+- 音声streamを含まない動画への対応
+- (時期未定)`subprocess`の`shell=True`を使用しない設計へのリファクタリング
+- 補完倍率`ratio`の実装
+- PysimpleGUIを使用したGUIの実装
+- fletを使用したGUIの実装
+
