@@ -43,9 +43,14 @@ FFmpegとRIFE-ncnn-Vulkanを組み合わせて、元動画を2倍補完したも
 - configファイルは`[DEFAULT]`セクションと`[USER]`セクションによって構成されています。
 - `[USER]`値が空(`None`)の場合、ソフトウェアは`[DEFAULT]`セクションの値を参照します。
 - `[USER]`値が空(`None`)でない場合、ソフトウェアは`[USER]`セクションの値を参照します。
-- 自分自身で設定をする場合は**`[USER]`セクションの値のみを書きかえる**ことを推奨します。
+- 自分自身で設定をする場合は`[USER]`**セクションの値のみを書きかえる**ことを推奨します。
 
-### pyrife-ncnn-vulkan.ini
+### config.ini
+App.py起動用のconfigです。
+-`pyrife_ncnn_vulkan_config` 下記pyrife_ncnn_vulkan.iniの場所を指定します。
+-`pyffmpeg_config` 下記pyffmpeg.iniの場所を指定します
+
+### pyrife_ncnn_vulkan.ini
 RIFE-ncnn-Vulkan用のconfigです。
 - `input_folder` RIFEが処理する対象となる、補完処理前のフレームのあるフォルダを指定します。
 - `output_folder` RIFEが処理したあとの、補完処理後のフレーム出力先フォルダを指定します。
@@ -54,7 +59,7 @@ RIFE-ncnn-Vulkan用のconfigです。
 - `rifever` RIFEの補完に使用するモデルのバージョンを指定します。
 - `rifeusage` RIFEの動作スレッド数を指定します(多いとメモリ使用量が増えます)
 - `rifegpu` RIFEが使用するGPUのナンバーを指定します(-1でCPU処理)
-- `ratio` 補完倍率を指定します **※注：現段階では`ratio`に関わらず2倍で動作します**
+- `ratio` 補完倍率を指定します **※注：現段階では`ratio`に関わらず2倍で動作します(未実装)**
 
 ### pyffmpeg.ini
 FFmpeg用のconfigです。
@@ -79,7 +84,7 @@ FFmpeg用のconfigです。
 
 ## 修正及び機能追加予定
 - 音声streamを含まない動画への対応
-- (時期未定)`subproces`sの`shell=True`を使用しない設計へのリファクタリング
+- (時期未定)`subprocess`の`shell=True`を使用しない設計へのリファクタリング
 - 補完倍率`ratio`の実装
 - PysimpleGUIを使用したGUIの実装
 - fletを使用したGUIの実装
