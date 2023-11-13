@@ -40,20 +40,29 @@ FFmpegとRIFE-ncnn-Vulkanを組み合わせて、元動画を2倍補完したも
 全てのconfigファイルは.\setting内に存在します。
 
 ### pyrife-ncnn-vulkan.ini
-RIFE-ncnn-Vulkan用のcomfigです。
+RIFE-ncnn-Vulkan用のconfigです。
+- `input_folder` RIFEが処理する対象となる、補完処理前のフレームのあるフォルダを指定します。
+- `output_folder` RIFEが処理したあとの、補完処理後のフレームのあるフォルダを指定します。
+- `output_extension` RIFEが処理したフレームのファイル形式を指定します。
+- `rifeexe` RIFE-ncnn-Vulkan.exeの場所を指定します。
+- `rifever` RIFEの補完に使用するモデルのバージョンを指定します。
+- `rifeusage` RIFEの動作スレッド数を指定します(多いとメモリ使用量が増えます)
+- `rifegpu` RIFEが使用するGPUのナンバーを指定します(-1でCPU処理)
+- `ratio` 補完倍率を指定します **※注：現段階では`ratio`に関わらず2倍で動作します**
 
 ## 注意事項
-- FFmpeg,FFprobe,RIFE-ncnn-Vulkanは全て実行ファイルをsubprocessで呼び出しています。
-    その際に、shell=Trueを使用しています。設定値にシェルがコマンドと誤認識する値があると、シェルインジェクションなどの危険性があります。
+- FFmpeg,FFprobe,RIFE-ncnn-Vulkanは全て実行ファイルを`subprocess`で呼び出しています。
+    その際に、`shell=True`を使用しています。設定値にシェルがコマンドと誤認識する値があると、シェルインジェクションなどの危険性があります。
 - 著作権で保護された映像の加工及び公開は法律に反する場合があります。作者は責任を負いかねますので、使用方法にはお気をつけください。
 
 ## 既知の不具合
 - 音声streamを含まない動画が処理できない問題
-- subprocessにおいてshell=Trueを使用していることによる誤作動のリスク
+- `subprocess`において`shell=True`を使用していることによる誤作動のリスク
 
 ## 修正及び機能追加予定
 - 音声streamを含まない動画への対応
-- (時期未定)subprocessのshell=Trueを使用しない設計へリファクタリング
+- (時期未定)`subproces`sの`shell=True`を使用しない設計へのリファクタリング
+- 補完倍率`ratio`の実装
 - PysimpleGUIを使用したGUIの実装
 - fletを使用したGUIの実装
 
