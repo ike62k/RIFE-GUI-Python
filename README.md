@@ -5,8 +5,8 @@ copyright 2023 びろーど(Veludo)
 このプログラムは趣味の一環として作成されたものです。本ソフトウェアを使用したいかなる結果についても作者は責任を負いません。<br>
 このソフトウェアはMIT LICENSEにて提供されています。MIT LICENSEは添付しているLICENSEを参照してください。<br>
 本ソフトウェアはffmpeg及びffprobeを使用しています。使用しているのはLGPL版であり、動的リンクでの使用としているため本ソフトウェア自体はMIT LICENSEにて公開しています。<br>
-ffmpeg及びffprobeのライセンスは.\lib\ffmpeg\LGPL_LICENSE_for_ffmpeg.txtを参照してください。
-
+ffmpeg及びffprobeのライセンスは.\lib\ffmpeg\LICENSE_for_FFmpegを参照してください。
+RIFE-ncnn-Vulkanのライセンスは.\lib\rife_ncnn_vulkan\LICENSE_for_RIFE-ncnn-Vulkanを参照してください。
 ## 動作(確認済み)環境
 - windows10 or windows11
 - Python 3.12(以前のVerでも動く可能性はあります※未検証)
