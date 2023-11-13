@@ -47,8 +47,8 @@ FFmpegとRIFE-ncnn-Vulkanを組み合わせて、元動画を2倍補完したも
 
 ### config.ini
 App.py起動用のconfigです。
--`pyrife_ncnn_vulkan_config` 下記pyrife_ncnn_vulkan.iniの場所を指定します。
--`pyffmpeg_config` 下記pyffmpeg.iniの場所を指定します
+- `pyrife_ncnn_vulkan_config` 下記pyrife_ncnn_vulkan.iniの場所を指定します。
+- `pyffmpeg_config` 下記pyffmpeg.iniの場所を指定します
 
 ### pyrife_ncnn_vulkan.ini
 RIFE-ncnn-Vulkan用のconfigです。
