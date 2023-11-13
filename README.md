@@ -1,8 +1,9 @@
 # RIFE AUTOMATION TOOL PYTHON
-copyright 2023 びろーど(Veludo)
+copyright 2023 びろーど(Veludo)<br>
+このREADMEはVersion 2.x用に書かれたものです。Version 1.xとの互換性はありません。
 
 ## はじめに
-このプログラムは趣味の一環として作成されたものです。本ソフトウェアを使用したいかなる結果についても作者は責任を負いません。<br>
+このソフトウェアは趣味の一環として作成されたものです。本ソフトウェアを使用したいかなる結果についても作者は責任を負いません。<br>
 このソフトウェアはMIT LICENSEにて提供されています。MIT LICENSEは添付しているLICENSEを参照してください。<br>
 本ソフトウェアはffmpeg及びffprobeを使用しています。使用しているのはLGPL版であり、動的リンクでの使用としているため本ソフトウェア自体はMIT LICENSEにて公開しています。<br>
 ffmpeg及びffprobeのライセンスは.\lib\ffmpeg\LICENSE_for_FFmpegを参照してください。
@@ -21,6 +22,14 @@ RIFE-ncnn-Vulkanのライセンスは.\lib\rife_ncnn_vulkan\LICENSE_for_RIFE-ncn
 映像の前後コマから間のコマを生成するソフトウェア[RIFE-ncnn-Vulkan](https://github.com/nihui/rife-ncnn-vulkan)をより便利に活用するためのソフトウェアです。<br>
 FFmpegとRIFE-ncnn-Vulkanを組み合わせて、元動画を2倍補完したものを生成します。<br>
 動作にはWindows環境とそこで動作するPythonが必要です。Pythonの外部ライブラリは使用していません。<br>
+Pythonの基本ライブラリとして以下のライブラリを使用しています。
+- `os`
+- `glob`
+- `shutil`
+- `subprocess`
+- `configparser`
+- `tkinter`
+
 お好みのFFmpeg,FFProbeビルドを代わりに使用することも可能です。(ライセンスにはご注意ください)<br>
 
 ## 使用出来る元動画ファイル
