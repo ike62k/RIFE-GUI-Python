@@ -37,18 +37,36 @@ FFmpegとRIFE-ncnn-Vulkanを組み合わせて、元動画を2倍補完したも
 
 ## 各種設定について
 本ソフトウェアでは、ユーザーごとの環境に合わせて柔軟に設定を操作できるよう、configファイルを設定しています。<br>
-全てのconfigファイルは.\setting内に存在します。
+全てのconfigファイルは.\setting内に存在します。<br>
+
+### 共通
+- configファイルは`[DEFAULT]`セクションと`[USER]`セクションによって構成されています。
+- `[USER]`値が空(`None`)の場合、ソフトウェアは`[DEFAULT]`セクションの値を参照します。
+- `[USER]`値が空(`None`)でない場合、ソフトウェアは`[USER]`セクションの値を参照します。
+- 自分自身で設定をする場合は**`[USER]`セクションの値のみを書きかえる**ことを推奨します。
 
 ### pyrife-ncnn-vulkan.ini
 RIFE-ncnn-Vulkan用のconfigです。
 - `input_folder` RIFEが処理する対象となる、補完処理前のフレームのあるフォルダを指定します。
-- `output_folder` RIFEが処理したあとの、補完処理後のフレームのあるフォルダを指定します。
+- `output_folder` RIFEが処理したあとの、補完処理後のフレーム出力先フォルダを指定します。
 - `output_extension` RIFEが処理したフレームのファイル形式を指定します。
 - `rifeexe` RIFE-ncnn-Vulkan.exeの場所を指定します。
 - `rifever` RIFEの補完に使用するモデルのバージョンを指定します。
 - `rifeusage` RIFEの動作スレッド数を指定します(多いとメモリ使用量が増えます)
 - `rifegpu` RIFEが使用するGPUのナンバーを指定します(-1でCPU処理)
 - `ratio` 補完倍率を指定します **※注：現段階では`ratio`に関わらず2倍で動作します**
+
+### pyffmpeg.ini
+FFmpeg用のconfigです。
+- `input_file` 補完処理を行う元動画を指定します。
+- `input_folder` RIFEの補完処理が完了したあとのフレームが存在するフォルダを指定します。
+- `output_folder` RIFEに渡す、補完処理前のフレーム出力先フォルダを指定します。
+- `conplete_folder` 前処理が完了して完成した動画を出力するフォルダを指定します。
+- `ffmpegexe` FFmpeg.exeの場所を指定します。
+- `ffprobeexe` FFprobe.exeの場所を指定します。
+- `image_extension` RIFEに渡す、補完処理前のフレームのファイル形式を指定します。
+- `video_extension` 完成した動画のファイル形式を指定します。
+- `option` FFmpegのoptionを指定します。動画のコーデック、画質などを指定します。
 
 ## 注意事項
 - FFmpeg,FFprobe,RIFE-ncnn-Vulkanは全て実行ファイルを`subprocess`で呼び出しています。
