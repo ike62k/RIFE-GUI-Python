@@ -32,7 +32,7 @@ class main:
     def run_all_process(self):
         self.ffmpeg.video_to_image()
         self.rife.run()
-        self.ffmpeg.image_to_video()
+        self.ffmpeg.image_to_video(str(int(self.ffmpeg.get_framerate())*int(self.rife.ratio)), self.ffmpeg.get_title(False))
 
     def crean_ffmpeg_folder(self):
         if os.path.exists(self.ffmpeg.input_folder):

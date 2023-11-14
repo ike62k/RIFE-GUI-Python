@@ -1,6 +1,7 @@
 import subprocess
 import glob
 import os
+import shutil
 from lib.confighandler import ConfigHandler
 
 class Pyrife_ncnn_vulkan():
@@ -162,9 +163,29 @@ class Pyrife_ncnn_vulkan():
     def run(self):
         self._errorcheck_all()
         subprocess.run(
-            f"{self.rifeexe} -i {self.input_folder}/ -o {self.output_folder}/ -m rife-{self.rifever}/ -j {self.rifeusage}/ -f 2x%010d.{self.output_extension}", 
+            f"{self.rifeexe} -i {self.input_folder}/ -o {self.output_folder}/ -m rife-{self.rifever}/ -j {self.rifeusage}/ -f rife%010d.{self.output_extension}", 
             shell=True
             )
+        if self.ratio == "4":
+            self._chenge_inout()
+            self._delete_output_folder_contents()
+            subprocess.run(
+                f"{self.rifeexe} -i {self.input_folder}/ -o {self.output_folder}/ -m rife-{self.rifever}/ -j {self.rifeusage}/ -f rife%010d.{self.output_extension}", 
+                shell=True
+                )
+        
+    def _chenge_inout(self):
+        os.rename(self.input_folder, f"{self.input_folder}_temp")
+        os.rename(self.output_folder, self.input_folder)
+        os.rename(f"{self.input_folder}_temp", self.output_folder)
+
+    def  _delete_input_folder_contents(self):
+        shutil.rmtree(self.input_folder)
+        os.makedirs(self.input_folder)
+
+    def _delete_output_folder_contents(self):
+        shutil.rmtree(self.output_folder)
+        os.makedirs(self.output_folder)
 
     #↓変数の存在チェックとそれに伴うエラー↓
     #エラー用クラス

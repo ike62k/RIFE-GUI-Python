@@ -192,10 +192,10 @@ class Pyffmpeg:
             shell=True
             )
         
-    def image_to_video(self):
+    def image_to_video(self, target_framerate: str, target_title: str):
         self._errorcheck_all()
         subprocess.run(
-            f"{self.ffmpegexe} -i {self.input_file} -r {int(self.get_framerate())*2} -i {self.input_folder}\\2x%10d.{self.image_extension} -map 0:1 -map 1:0 -c:a copy {self.option} -r {int(self.get_framerate())*2} {self.complete_folder}\\{self.get_title(False)}_2x.{self.video_extension}",
+            f"{self.ffmpegexe} -i {self.input_file} -r {target_framerate} -i {self.input_folder}\\rife%10d.{self.image_extension} -map 0:1 -map 1:0 -c:a copy {self.option} -r {int(self.get_framerate())*2} {self.complete_folder}\\{target_title}_rife.{self.video_extension}",
             shell=True
         )
 
