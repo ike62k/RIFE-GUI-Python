@@ -5,7 +5,7 @@
 class Version:
     def __init__(self):
         self.__version = "2.0-pre3"
-        self.__subver = "00002"
+        self.__subver = "00003"
         self.__date_App = 20231117
         self.__date_confighandler = 20231117
         self.__date_pyffmpeg = 20231117
