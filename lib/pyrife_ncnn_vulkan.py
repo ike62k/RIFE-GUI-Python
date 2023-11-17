@@ -1,6 +1,7 @@
 import subprocess
 import glob
 import os
+import shutil
 from lib.confighandler import ConfigHandler
 
 class Pyrife_ncnn_vulkan():
@@ -90,11 +91,11 @@ class Pyrife_ncnn_vulkan():
 
     #補完倍率の変更と確認
     @property
-    def riferatio(self) -> str:
-        return self.__riferatio
-    @riferatio.setter
-    def riferatio(self, riferatio: str):
-        self.__riferatio = riferatio
+    def rifetimes(self) -> str:
+        return self.__rifetimes
+    @rifetimes.setter
+    def rifetimes(self, rifetimes: str):
+        self.__rifetimes = rifetimes
     
     #↓各パラメーターをconfigファイルから操作する↓
     #configファイルからの適応
@@ -140,11 +141,11 @@ class Pyrife_ncnn_vulkan():
         else:
             self.rifegpu = self.config_data["USER"]["rifegpu"]
 
-    def apply_ratio_from_config(self):
-        if self.config_data["USER"]["ratio"] == "":
-            self.ratio = self.config_data["DEFAULT"]["ratio"]
+    def apply_times_from_config(self):
+        if self.config_data["USER"]["times"] == "":
+            self.times = self.config_data["DEFAULT"]["times"]
         else:
-            self.ratio = self.config_data["USER"]["ratio"]
+            self.times = self.config_data["USER"]["times"]
 
     #configから各パラメータの全適用
     def apply_all_from_config(self):
@@ -155,16 +156,70 @@ class Pyrife_ncnn_vulkan():
         self.apply_rifever_from_config()
         self.apply_rifeusage_from_config()
         self.apply_rifegpu_from_config()
-        self.apply_ratio_from_config()
+        self.apply_times_from_config()
 
 
     #rife-ncnn-vulkanを実行
-    def run(self):
+    def __run_old(self):
         self._errorcheck_all()
         subprocess.run(
-            f"{self.rifeexe} -i {self.input_folder}/ -o {self.output_folder}/ -m rife-{self.rifever}/ -j {self.rifeusage}/ -f 2x%010d.{self.output_extension}", 
+            f"{self.rifeexe} -i {self.input_folder}/ -o {self.output_folder}/ -m rife-{self.rifever}/ -j {self.rifeusage}/ -f rife%010d.{self.output_extension}", 
             shell=True
             )
+        if self.times == "4" and False:
+            os.rename(self.output_folder, "temp_rife")
+            print(self.output_folder) # test
+            print(f"{self.rifeexe} -i .\\temp_rife/ -o {self.output_folder}/ -m rife-{self.rifever}/ -j {self.rifeusage}/ -f rife%010d.{self.output_extension}")
+            print(f"{self.rifeexe} -i {self.input_folder}/ -o {self.output_folder}/ -m rife-{self.rifever}/ -j {self.rifeusage}/ -f rife%010d.{self.output_extension}")
+            input() #testここまで
+            subprocess.run(
+                f"{self.rifeexe} -i .\\temp_rife/ -o {self.output_folder}/ -m rife-{self.rifever}/ -j {self.rifeusage}/ -f rife%010d.{self.output_extension}", 
+                shell=True
+                )
+        
+    def run(self):
+        self._errorcheck_all()
+        for count in range(1,int(self.times)+1):
+            print(f"{2**(int(count)-1)}x→{2**int(count)}x work:{count}")
+
+            if int(self.times) == 1: #総補完回数が1回
+                subprocess.run(
+                f"{self.rifeexe} -i {self.input_folder}/ -o {self.output_folder}/ -m rife-{self.rifever}/ -j {self.rifeusage}/ -f rife%010d.{self.output_extension}", 
+                shell=True
+                )
+            elif count == 1: #総補完回数が1回でないときの1回目
+                os.makedirs(f".\\temp_rife_{count}")
+                subprocess.run(
+                f"{self.rifeexe} -i {self.input_folder}/ -o .\\temp_rife_{count}/ -m rife-{self.rifever}/ -j {self.rifeusage}/ -f rife%010d.{self.output_extension}", 
+                shell=True
+                )
+                shutil.rmtree(self.input_folder)
+            elif count < int(self.times): #2回目~(最終でない)
+                os.makedirs(f".\\temp_rife_{count}")
+                subprocess.run(
+                f"{self.rifeexe} -i .\\temp_rife_{int(count)-1}/ -o .\\temp_rife_{count}/ -m rife-{self.rifever}/ -j {self.rifeusage}/ -f rife%010d.{self.output_extension}", 
+                shell=True
+                )
+                shutil.rmtree(f".\\temp_rife_{int(count)-1}")
+            else: #最終
+                subprocess.run(
+                f"{self.rifeexe} -i .\\temp_rife_{int(count)-1}/ -o {self.output_folder}/ -m rife-{self.rifever}/ -j {self.rifeusage}/ -f rife%010d.{self.output_extension}", 
+                shell=True
+                )
+                shutil.rmtree(f".\\temp_rife_{int(count)-1}")
+
+    def _chenge_inout(self):
+        os.rename(self.input_folder, f"{self.input_folder}_temp")
+        os.rename(self.output_folder, self.input_folder)
+        os.rename(f"{self.input_folder}_temp", self.output_folder)
+
+    def  _delete_input_folder_contents(self):
+        shutil.rmtree(self.input_folder)
+        os.makedirs(self.input_folder)
+
+    def _delete_output_folder_contents(self):
+        shutil.rmtree(self.output_folder)
+        os.makedirs(self.output_folder)
 
     #↓変数の存在チェックとそれに伴うエラー↓
     #エラー用クラス
@@ -213,11 +268,13 @@ class Pyrife_ncnn_vulkan():
         except:
             raise self.RifeError("\"rifeexe\" is not set. \"rifeexe\"が設定されていません")
         
-    def _errorcheck_setratio(self):
+    def _errorcheck_settimes(self):
         try:
-            self.ratio
+            int(self.times)
         except:
-            raise self.RifeError("\"ratio\" is not set. \"ratio\"が設定されていません")
+            raise self.RifeError("\"times\" is not set. \"times\"が設定されていません")
+        if int(self.times) < 0:
+            raise self.RifeError("\"times\" is only natural number. \"times\"は自然数のみです")
     
     #全変数の存在チェック
     def _errorcheck_all(self):
@@ -228,4 +285,4 @@ class Pyrife_ncnn_vulkan():
         self._errorcheck_setrifever()
         self._errorcheck_setrifeusage()
         self._errorcheck_setrifegpu()
-        self._errorcheck_setratio()
+        self._errorcheck_settimes()

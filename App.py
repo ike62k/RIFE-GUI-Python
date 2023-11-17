@@ -32,7 +32,7 @@ class main:
     def run_all_process(self):
         self.ffmpeg.video_to_image()
         self.rife.run()
-        self.ffmpeg.image_to_video()
+        self.ffmpeg.image_to_video(str(int(self.ffmpeg.get_framerate())*(2**int(self.rife.times))), self.ffmpeg.get_title(False))
 
     def crean_ffmpeg_folder(self):
         if os.path.exists(self.ffmpeg.input_folder):
@@ -71,6 +71,7 @@ class main:
             f"使用するRIFEのモデル:{self.rife.rifever}\n",
             f"使用するGPU No.:{self.rife.rifegpu}\n",
             f"RIFEの並行処理数:{self.rife.rifeusage}\n",
+            f"補完回数:{self.rife.times}\n",
             f"補完後フレームの保存場所:{self.rife.output_folder}\n",
             f"補完後フレームの拡張子:{self.rife.output_extension}\n",
             "\n-補完後の設定-\n",
