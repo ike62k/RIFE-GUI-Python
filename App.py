@@ -44,6 +44,7 @@ class rife():
 
     def reload(self):
         self.rife.config_path = self.__config_path
+        self.rife.apply_all_from_config()
 
     def interpolate(self):
         self.rife.run()
@@ -70,6 +71,7 @@ class ffmpeg():
 
     def reload(self):
         self.ffmpeg.config_path = self.__config_path
+        self.ffmpeg.apply_all_from_config()
 
     def vid2img(self):
         self.ffmpeg.video_to_image()
