@@ -41,25 +41,46 @@ Pythonの基本ライブラリとして以下のライブラリを使用して�
 - ファイル名及びファイルパスに` `(半角スペース)、`.`(ピリオド)があると正しく動作しません
 
 ## 使い方
+
+### 起動手順
 1. Pythonをインストールします。
 2. 本プロジェクトのReleaseページからソースコードをダウンロードします。
 3. 適当な場所で展開します
 4. App.pyを実行します
 
+### App.pyの操作方法
+App.pyはいくつかのコマンドを入力して動作します。<br>
+コマンド一覧は以下の通りです。
+- `-help` コマンドの一覧を表示します
+- `-version` バージョン情報を表示します
+- `-file` 動画選択用にファイル選択ダイアログを表示します
+- `-reload` pyrife_ncnn_vulkan.ini,pyffmpeg.iniの各パラメータを最新の状態に更新します
+- `-status` 現在のpyrife_ncnn_vulkan.ini,pyffmpeg.iniの各パラメータを表示します
+- `-run` 補完処理を開始します
+- `-exit` ソフトウェアを終了します
+
 ## 各種設定について
 本ソフトウェアでは、ユーザーごとの環境に合わせて柔軟に設定を操作できるよう、configファイルを設定しています。<br>
 全てのconfigファイルは.\setting内に存在します。<br>
+一切configファイルに手を付けなくても動作しますが、できるだけ環境に合わせてconfigファイルを変更することをおすすめします。<br>
+上項**App.pyの操作方法**に記載している通り、App.pyには`-reload`というコマンドがあります。<br>
+これを使用することでApp.pyを起動した後でも、configファイルの値の変更を反映することができます<br>
+configファイルに加筆したあとに、App.pyで`-reload`を実行すると変更が反映されます。<br>
+※一度`-run`を実行すると処理が終了するまでconfigの変化は反映できません
 
 ### 共通
 - configファイルは`[DEFAULT]`セクションと`[USER]`セクションによって構成されています。
 - `[USER]`値が空(`None`)の場合、ソフトウェアは`[DEFAULT]`セクションの値を参照します。
 - `[USER]`値が空(`None`)でない場合、ソフトウェアは`[USER]`セクションの値を参照します。
 - **自分自身で設定をする場合は`[USER]`セクションの値のみを書きかえる**ことを推奨します。
+- `[USER]`セクションに`[DEFAULT]`セクションと同様に `key = value`の形で項目を書き込みます
+- `value`の前後のスペースは無視されます。 例) `A = value`と`A=value`は同値です `A = value1 value2`と`A = value1value2`は同値ではありません
 
 ### config.ini
-App.py起動用のconfigです。
+App.py起動用のconfigです。基本的には触らなくて大丈夫です
 - `pyrife_ncnn_vulkan_config` 下記pyrife_ncnn_vulkan.iniの場所を指定します。
 - `pyffmpeg_config` 下記pyffmpeg.iniの場所を指定します
+- **このファイルは動かさないようにしてください(App.pyが全configを認識できなくなります)**
 
 ### pyrife_ncnn_vulkan.ini
 RIFE-ncnn-Vulkan用のconfigです。
@@ -68,9 +89,9 @@ RIFE-ncnn-Vulkan用のconfigです。
 - `output_extension` RIFEが処理したフレームのファイル形式を指定します。
 - `rifeexe` RIFE-ncnn-Vulkan.exeの場所を指定します。
 - `rifever` RIFEの補完に使用するモデルのバージョンを指定します。
-- `rifeusage` RIFEの動作スレッド数を指定します(多いとメモリ使用量が増えます)
-- `rifegpu` RIFEが使用するGPUのナンバーを指定します(-1でCPU処理)
-- `times` 補完回数を指定します(1→2倍,2→4倍,3→8倍...) **2^nで処理時間が増えます。数値は小さめにすることを推奨します**
+- `rifeusage` RIFEの動作スレッド数を指定します。(多いとメモリ使用量が増えます)
+- `rifegpu` RIFEが使用するGPUのナンバーを指定します。(-1でCPU処理)
+- `times` 補完回数を指定します。(1→2倍,2→4倍,3→8倍...) **2^nで処理時間が増えます。数値は小さめにすることを推奨します**
 
 ### pyffmpeg.ini
 FFmpeg用のconfigです。
@@ -90,7 +111,8 @@ FFmpeg用のconfigです。
 - 著作権で保護された映像の加工及び公開は法律に反する場合があります。作者は責任を負いかねますので、使用方法にはお気をつけください。
 
 ## 今アップデートで追加された内容
-- 補完回数`times`を追加しました
+- 補完回数`times`を追加しました。
+- App.pyの改良
 
 ## 既知の不具合
 - 音声streamを含まない動画が処理できない問題
@@ -100,5 +122,5 @@ FFmpeg用のconfigです。
 - 音声streamを含まない動画への対応
 - (時期未定)`subprocess`の`shell=True`を使用しない設計へのリファクタリング
 - PysimpleGUIを使用したGUIの実装
-- fletを使用したGUIの実装
+- (未定)fletを使用したGUIの実装
 
