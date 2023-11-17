@@ -187,26 +187,27 @@ class Pyrife_ncnn_vulkan():
                 f"{self.rifeexe} -i {self.input_folder}/ -o {self.output_folder}/ -m rife-{self.rifever}/ -j {self.rifeusage}/ -f rife%010d.{self.output_extension}", 
                 shell=True
                 )
+                shutil.rmtree(self.input_folder, True)
             elif count == 1: #総補完回数が1回でないときの1回目
                 os.makedirs(f".\\temp_rife_{count}")
                 subprocess.run(
                 f"{self.rifeexe} -i {self.input_folder}/ -o .\\temp_rife_{count}/ -m rife-{self.rifever}/ -j {self.rifeusage}/ -f rife%010d.{self.output_extension}", 
                 shell=True
                 )
-                shutil.rmtree(self.input_folder)
+                shutil.rmtree(self.input_folder, True)
             elif count < int(self.times): #2回目~(最終でない)
                 os.makedirs(f".\\temp_rife_{count}")
                 subprocess.run(
                 f"{self.rifeexe} -i .\\temp_rife_{int(count)-1}/ -o .\\temp_rife_{count}/ -m rife-{self.rifever}/ -j {self.rifeusage}/ -f rife%010d.{self.output_extension}", 
                 shell=True
                 )
-                shutil.rmtree(f".\\temp_rife_{int(count)-1}")
+                shutil.rmtree(f".\\temp_rife_{int(count)-1}", True)
             else: #最終
                 subprocess.run(
                 f"{self.rifeexe} -i .\\temp_rife_{int(count)-1}/ -o {self.output_folder}/ -m rife-{self.rifever}/ -j {self.rifeusage}/ -f rife%010d.{self.output_extension}", 
                 shell=True
                 )
-                shutil.rmtree(f".\\temp_rife_{int(count)-1}")
+                shutil.rmtree(f".\\temp_rife_{int(count)-1}", True)
 
     def _chenge_inout(self):
         os.rename(self.input_folder, f"{self.input_folder}_temp")

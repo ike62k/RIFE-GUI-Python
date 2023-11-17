@@ -1,6 +1,7 @@
 import subprocess
 import glob
 import os
+import shutil
 from lib.confighandler import ConfigHandler
 
 class Pyffmpeg:
@@ -198,6 +199,7 @@ class Pyffmpeg:
             f"{self.ffmpegexe} -i {self.input_file} -r {target_framerate} -i {self.input_folder}\\rife%10d.{self.image_extension} -map 0:1 -map 1:0 -c:a copy {self.option} -r {target_framerate} {self.complete_folder}\\{target_title}_rife.{self.video_extension}",
             shell=True
         )
+        shutil.rmtree(self.input_folder, True)
 
 
     class FFmpegError(Exception):

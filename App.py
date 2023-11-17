@@ -6,82 +6,17 @@ from lib.pyffmpeg import Pyffmpeg
 from lib.confighandler import ConfigHandler
 from lib.VERSION import Version
 
-class main:
-    def __init__(self, config_path: str) -> None:
-        self.__config_path = config_path
-        self.__config = ConfigHandler(self.__config_path)
-        self.__config_data: dict = self.__config.read_all()
-        if self.__config_data["USER"]["pyrife_ncnn_vulkan_config"] == "":
-            self.__pyrife_ncnn_vulkan_config = self.__config_data["DEFAULT"]["pyrife_ncnn_vulkan_config"]
-        else:
-            self.__pyrife_ncnn_vulkan_config = self.__config_data["USER"]["pyrife_ncnn_vulkan_config"]
-        if self.__config_data["USER"]["pyffmpeg_config"] == "":
-            self.__pyffmpeg_config = self.__config_data["DEFAULT"]["pyffmpeg_config"]
-        else:
-            self.__pyffmpeg_config = self.__config_data["USER"]["pyffmpeg_config"]
+
+class config():
+    def __init__(self, path: str):
+        self.__config = ConfigHandler(path)
+        self.configdata = self.__config.read_all()
+
+class ver():
+    def __init__(self):
         self.__version = Version()
 
-    def create_instance_rife(self):
-        self.rife = Pyrife_ncnn_vulkan(self.__pyrife_ncnn_vulkan_config)
-        self.rife.apply_all_from_config()
-    
-    def create_instance_ffmpeg(self):
-        self.ffmpeg = Pyffmpeg(self.__pyffmpeg_config)
-        self.ffmpeg.apply_all_from_config()
-
-    def run_all_process(self):
-        self.ffmpeg.video_to_image()
-        self.rife.run()
-        self.ffmpeg.image_to_video(str(int(self.ffmpeg.get_framerate())*(2**int(self.rife.times))), self.ffmpeg.get_title(False))
-
-    def crean_ffmpeg_folder(self):
-        if os.path.exists(self.ffmpeg.input_folder):
-            shutil.rmtree(self.ffmpeg.input_folder)
-        if os.path.exists(self.ffmpeg.output_folder):
-            shutil.rmtree(self.ffmpeg.output_folder)
-
-    def connection_check(self) -> str:
-        if self.ffmpeg.output_folder != self.rife.input_folder or self.ffmpeg.input_folder != self.rife.output_folder:
-            return (
-                "FFmpegとRIFE間でのフォルダの整合性が取れていません\n",
-                "FFmpegの\"output_folder\"とRIFEの\"input_folder\"は同一である必要があります\n"
-                "FFmpegの\"input_folder\"とRIFEの\"output_folder\"は同一である必要があります\n"
-                )
-        else:
-            return "整合性に関する問題はありませんでした"
-        
-    def software_check(self):
-        list = []
-        if not os.path.isfile(self.rife.rifeexe):
-            list.append("RIFE-ncnn-Vulkan.exeが見つかりませんでした")
-        if not os.path.isfile(self.ffmpeg.ffmpegexe):
-            list.append("FFmpeg.exeが見つかりませんでした")
-        if not os.path.isfile(self.ffmpeg.ffprobeexe):
-            list.append("FFprobe.exeが見つかりませんでした")
-        return list if list != [] else "ソフトウェアが確認できました"
-
-    def show_now_setting(self):
-        print("\n========現在の設定========\n")
-        print(
-            f"選択中の動画{self.ffmpeg.input_file}\n",
-            "\n-補完処理前の設定-\n",
-            f"補完元フレームの保存場所:{self.ffmpeg.output_folder}\n",
-            f"補完元フレームの拡張子:{self.ffmpeg.image_extension}\n",
-            "\n-補完処理の設定-\n",
-            f"使用するRIFEのモデル:{self.rife.rifever}\n",
-            f"使用するGPU No.:{self.rife.rifegpu}\n",
-            f"RIFEの並行処理数:{self.rife.rifeusage}\n",
-            f"補完回数:{self.rife.times}\n",
-            f"補完後フレームの保存場所:{self.rife.output_folder}\n",
-            f"補完後フレームの拡張子:{self.rife.output_extension}\n",
-            "\n-補完後の設定-\n",
-            f"FFmpegエンコード時のオプション:{self.ffmpeg.option}\n",
-            f"完成動画の保存場所:{self.ffmpeg.complete_folder}\n",
-            f"完成動画の拡張子:{self.ffmpeg.video_extension}"
-        )
-        print("================================")
-
-    def version(self):
+    def show(self):
         print("\n================\n")
         print("RIFE AUTOMATION TOOL PYTHON")
         print("copyright 2023 Veludo")
@@ -89,26 +24,127 @@ class main:
         print(self.__version.date_App)
         print("\n================\n")
 
+class rife():
+    def __init__(self, config_path: str):
+        self.__config_path = config_path
+        self.rife = Pyrife_ncnn_vulkan(config_path)
+        self.rife.apply_all_from_config()
+
+    def status(self):
+        print("\n====RIFE STATUS====\n")
+        print(f"input_folder:  {self.rife.input_folder}")
+        print(f"output_folder:  {self.rife.output_folder}")
+        print(f"output_extension:  {self.rife.output_extension}")
+        print(f"rifeexe:  {self.rife.rifeexe}")
+        print(f"rifever:  {self.rife.rifever}")
+        print(f"rifeusage:  {self.rife.rifeusage}")
+        print(f"rifegpu:  {self.rife.rifegpu}")
+        print(f"times:  {self.rife.times}")
+        print("\n================\n")
+
+    def reload(self):
+        self.rife.config_path = self.__config_path
+
+    def interpolate(self):
+        self.rife.run()
+
+
+class ffmpeg():
+    def __init__(self, config_path: str):
+        self.__config_path = config_path
+        self.ffmpeg = Pyffmpeg(config_path)
+        self.ffmpeg.apply_all_from_config()
+
+    def status(self):
+        print("\n====FFmpeg STATUS====\n")
+        print(f"input_file:  {self.ffmpeg.input_file}")
+        print(f"input_folder:  {self.ffmpeg.input_folder}")
+        print(f"output_folder:  {self.ffmpeg.output_folder}")
+        print(f"complete_folder:  {self.ffmpeg.complete_folder}")
+        print(f"ffmpegexe:  {self.ffmpeg.ffmpegexe}")
+        print(f"ffprobeexe:  {self.ffmpeg.ffprobeexe}")
+        print(f"image_extension:  {self.ffmpeg.image_extension}")
+        print(f"video_extension:  {self.ffmpeg.video_extension}")
+        print(f"option:  {self.ffmpeg.option}")
+        print("\n================\n")
+
+    def reload(self):
+        self.ffmpeg.config_path = self.__config_path
+
+    def vid2img(self):
+        self.ffmpeg.video_to_image()
+    
+    def img2vid(self,times):
+        self.ffmpeg.image_to_video(str(int(self.ffmpeg.get_framerate())*(2**int(times))), self.ffmpeg.get_title(False))
+
+class main():
+    def __init__(self, path):
+        self.config = config(path)
+        self.rife = rife(self.config.configdata["USER"]["pyrife_ncnn_vulkan_config"])
+        self.ffmpeg = ffmpeg(self.config.configdata["USER"]["pyffmpeg_config"])
+        self.version = ver()
+
+    def wait(self):
+        while True:
+            now_input = input("入力してください> ")
+            if now_input == "-help":
+               self.help() 
+            elif now_input == "-version":
+                self.version.show()
+            elif now_input == "-file":
+                self.file()
+                self.status()
+            elif now_input == "-reload":
+                self.reload()
+                self.status()
+            elif now_input == "-status":
+                self.status()
+            elif now_input == "-run":
+                self.run()
+                self.endcheck()
+            elif now_input == "-exit":
+                exit() 
+            else:
+                print("存在しないコマンドです。コマンド一覧は\"-help\"を参照してください")
+                
+    def help(self):
+        print("\n====COMMAND====\n")
+        print("-help: show command\n",
+              "-version: show version\n"
+              "-file: select file\n"
+              "-reload: reload all config parameter\n",
+              "-status: show all config status\n",
+              "-exit: exit this software"
+              )
+        print("\n===============\n")
+        
+    def file(self):
+        self.ffmpeg.ffmpeg.input_file = filedialog.askopenfilename(initialdir=os.path.dirname(__file__))
+
+    def reload(self):
+        self.rife.reload()
+        self.ffmpeg.reload()
+        print("Config has been reloaded!")
+
+    def status(self):
+        self.rife.status()
+        self.ffmpeg.status()
+
+    def run(self):
+        print("処理を開始します")
+        self.ffmpeg.vid2img()
+        self.rife.interpolate()
+        self.ffmpeg.img2vid(self.rife.rife.times)
+
+    def endcheck(self):
+        print("処理が完了しました")
+        if input("続けて処理しますか？ [y or n]> ") in ["Y", "y"]:
+            pass
+        else:
+            exit()
+    
 
 if __name__ == "__main__":
     os.chdir(os.path.dirname(__file__))
-    runner = main(".\\setting\config.ini")
-    runner.create_instance_ffmpeg()
-    runner.create_instance_rife()
-    runner.version()
-    while True:
-        print("補完する動画を選んでください")
-        runner.ffmpeg.input_file = filedialog.askopenfilename(initialdir=os.path.dirname(__file__))
-        if not runner.ffmpeg.input_file == "":
-            break
-        print("選択されませんでした")
-    print(runner.software_check())
-    print(runner.connection_check())
-    runner.show_now_setting()
-    print("以上の条件で処理を開始しますか？(y/n)")
-    if not input() in ["y", "Y"]:
-        exit()
-    runner.run_all_process()
-    runner.crean_ffmpeg_folder()
-    print("処理が正しく完了しました\nEnterキーを押すと終了します")
-    input()
+    App = main(".\\setting\config.ini")
+    App.wait()
