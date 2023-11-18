@@ -163,17 +163,17 @@ class Pyrife_ncnn_vulkan():
     def __run_old(self):
         self._errorcheck_all()
         subprocess.run(
-            f"{self.rifeexe} -i {self.input_folder}/ -o {self.output_folder}/ -m rife-{self.rifever}/ -j {self.rifeusage}/ -f rife%010d.{self.output_extension}", 
+            f"{self.rifeexe} -i {self.input_folder}/ -o {self.output_folder}/ -m {self.rifever}/ -j {self.rifeusage}/ -f rife%010d.{self.output_extension}", 
             shell=True
             )
         if self.times == "4" and False:
             os.rename(self.output_folder, "temp_rife")
             print(self.output_folder) # test
-            print(f"{self.rifeexe} -i .\\temp_rife/ -o {self.output_folder}/ -m rife-{self.rifever}/ -j {self.rifeusage}/ -f rife%010d.{self.output_extension}")
-            print(f"{self.rifeexe} -i {self.input_folder}/ -o {self.output_folder}/ -m rife-{self.rifever}/ -j {self.rifeusage}/ -f rife%010d.{self.output_extension}")
+            print(f"{self.rifeexe} -i .\\temp_rife/ -o {self.output_folder}/ -m {self.rifever}/ -j {self.rifeusage}/ -f rife%010d.{self.output_extension}")
+            print(f"{self.rifeexe} -i {self.input_folder}/ -o {self.output_folder}/ -m {self.rifever}/ -j {self.rifeusage}/ -f rife%010d.{self.output_extension}")
             input() #testここまで
             subprocess.run(
-                f"{self.rifeexe} -i .\\temp_rife/ -o {self.output_folder}/ -m rife-{self.rifever}/ -j {self.rifeusage}/ -f rife%010d.{self.output_extension}", 
+                f"{self.rifeexe} -i .\\temp_rife/ -o {self.output_folder}/ -m {self.rifever}/ -j {self.rifeusage}/ -f rife%010d.{self.output_extension}", 
                 shell=True
                 )
         
@@ -184,27 +184,27 @@ class Pyrife_ncnn_vulkan():
 
             if int(self.times) == 1: #総補完回数が1回
                 subprocess.run(
-                f"{self.rifeexe} -i {self.input_folder}/ -o {self.output_folder}/ -m rife-{self.rifever}/ -j {self.rifeusage}/ -f rife%010d.{self.output_extension}", 
+                f"{self.rifeexe} -i {self.input_folder}/ -o {self.output_folder}/ -m {self.rifever}/ -j {self.rifeusage}/ -f rife%010d.{self.output_extension}", 
                 shell=True
                 )
                 shutil.rmtree(self.input_folder, True)
             elif count == 1: #総補完回数が1回でないときの1回目
                 os.makedirs(f".\\temp_rife_{count}")
                 subprocess.run(
-                f"{self.rifeexe} -i {self.input_folder}/ -o .\\temp_rife_{count}/ -m rife-{self.rifever}/ -j {self.rifeusage}/ -f rife%010d.{self.output_extension}", 
+                f"{self.rifeexe} -i {self.input_folder}/ -o .\\temp_rife_{count}/ -m {self.rifever}/ -j {self.rifeusage}/ -f rife%010d.{self.output_extension}", 
                 shell=True
                 )
                 shutil.rmtree(self.input_folder, True)
             elif count < int(self.times): #2回目~(最終でない)
                 os.makedirs(f".\\temp_rife_{count}")
                 subprocess.run(
-                f"{self.rifeexe} -i .\\temp_rife_{int(count)-1}/ -o .\\temp_rife_{count}/ -m rife-{self.rifever}/ -j {self.rifeusage}/ -f rife%010d.{self.output_extension}", 
+                f"{self.rifeexe} -i .\\temp_rife_{int(count)-1}/ -o .\\temp_rife_{count}/ -m {self.rifever}/ -j {self.rifeusage}/ -f rife%010d.{self.output_extension}", 
                 shell=True
                 )
                 shutil.rmtree(f".\\temp_rife_{int(count)-1}", True)
             else: #最終
                 subprocess.run(
-                f"{self.rifeexe} -i .\\temp_rife_{int(count)-1}/ -o {self.output_folder}/ -m rife-{self.rifever}/ -j {self.rifeusage}/ -f rife%010d.{self.output_extension}", 
+                f"{self.rifeexe} -i .\\temp_rife_{int(count)-1}/ -o {self.output_folder}/ -m {self.rifever}/ -j {self.rifeusage}/ -f rife%010d.{self.output_extension}", 
                 shell=True
                 )
                 shutil.rmtree(f".\\temp_rife_{int(count)-1}", True)

@@ -4,12 +4,12 @@
 """
 class Version:
     def __init__(self):
-        self.__version = "2.0"
+        self.__version = "2.0.1"
         self.__subver = "00001"
         self.__date_App = 20231118
         self.__date_confighandler = 20231118
         self.__date_pyffmpeg = 20231118
-        self.__date_pyrife_ncnn_vulkan = 20231118
+        self.__date_pyrife_ncnn_vulkan = 20231119
 
     @property
     def version(self):
