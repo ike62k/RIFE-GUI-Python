@@ -1,6 +1,7 @@
 import os
 import shutil
 import glob
+from concurrent.futures import ThreadPoolExecutor
 from tkinter import filedialog
 import PySimpleGUI as sg
 from lib.pyrife_ncnn_vulkan import Pyrife_ncnn_vulkan
@@ -41,13 +42,18 @@ class GUI:
             [sg.Text("動画の保存先:"), sg.FolderBrowse(button_text="参照", enable_events=True, target="-completefolder-"), sg.InputText(ffmpegconfig["complete_folder"], expand_x=True, key="-completefolder-"), sg.Text("\\(ファイル名)_rife.", key="-videoname-"),sg.InputText(ffmpegconfig["video_extension"], (10,1), key="-videoextension-")]
         ])
 
-        self.console = sg.Multiline("", write_only=True, expand_x=True, expand_y=True)
+        self.console = sg.Multiline("", disabled=True, expand_x=True, expand_y=True)
+
+        self.column_startstop = sg.Column(justification= "RIGHT", layout=[
+            [sg.Button("中止", disabled=True, key="-cancel"), sg.Button("実行", key="-run-")]
+        ])
         
         self.layout = [
             [self.column_inputfile],
             [sg.Column([[self.column_ffmpeg_in, self.column_rife]], justification="CENTER")],
             [self.column_ffmpeg_out],
-            [self.console]
+            [self.console],
+            [self.column_startstop]
             ]
         self.window = sg.Window("RIFE", self.layout, size=(800,600), resizable=True)
 
@@ -69,6 +75,29 @@ class Control:
                 else:
                     self.GUI.window["-videoname-"].update(f"\\{self.__inputfilevalue}_rife.")
 
+            if event == "-run-":
+                self.GUI.window["-run-"].update(disabled=True)
+                self.work.ffmpeg.input_file = values["-inputfile-"]
+                self.work.ffmpeg.image_extension = values["-imageextension-"]
+                self.work.rife.output_extension = values["-imageextension-"]
+                self.work.rife.rifever = values["-rifever-"]
+                self.work.rife.rifeusage = values["-rifeusage-"]
+                self.work.rife.rifegpu = values["-rifegpu-"]
+                self.work.rife.times = values["-times-"]
+                self.work.ffmpeg.video_extension = values["-videoextension-"]
+                self.work.ffmpeg.option = values["-option-"]
+                def run_all():
+                    self.work.ffmpeg.video_to_image()
+                    self.work.rife.run()
+                    self.work.ffmpeg.image_to_video(str(int(self.work.ffmpeg.get_framerate())*(2**int(self.work.rife.times))), self.work.ffmpeg.get_title(False))
+                self.GUI.window.start_thread(lambda: run_all(), end_key="-finish-")
+
+            if event == "-finish-":
+                self.GUI.window["-run-"].update(disabled=False)
+
+            if event == "-cancel-":
+                self.GUI.window.thre
+                
 
             if event == sg.WIN_CLOSED:
                 break
