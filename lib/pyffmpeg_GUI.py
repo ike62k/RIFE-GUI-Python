@@ -188,6 +188,7 @@ class Pyffmpeg:
 
     def video_to_image(self):
         self._errorcheck_all()
+        print("Video to Image")
         self.running_vid2img = subprocess.Popen(
             f"{self.ffmpegexe} -i {self.input_file} -an {self.output_folder}\\%10d.{self.image_extension}",
             shell=True,
@@ -201,8 +202,9 @@ class Pyffmpeg:
         
     def image_to_video(self, target_framerate: str, target_title: str):
         self._errorcheck_all()
+        print("Image to Video")
         self.running_img2vid = subprocess.Popen(
-            f"{self.ffmpegexe} -i {self.input_file} -r {target_framerate} -i {self.input_folder}\\rife%10d.{self.image_extension} -map 0:1 -map 1:0 -c:a copy {self.option} -r {target_framerate} {self.complete_folder}\\{target_title}_rife.{self.video_extension}",
+            f"{self.ffmpegexe} -i {self.input_file} -r {target_framerate} -i {self.input_folder}\\rife%10d.{self.image_extension} -map 0:1 -map 1:0 -c:a copy {self.option} -r {target_framerate} {self.complete_folder}\\{target_title}.{self.video_extension}",
             shell=True,
             stdout=subprocess.PIPE
             )
