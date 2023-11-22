@@ -4,8 +4,8 @@ import glob
 from concurrent.futures import ThreadPoolExecutor
 from tkinter import filedialog
 import PySimpleGUI as sg
-from lib.pyrife_ncnn_vulkan import Pyrife_ncnn_vulkan
-from lib.pyffmpeg import Pyffmpeg
+from lib.pyrife_ncnn_vulkan_GUI import Pyrife_ncnn_vulkan
+from lib.pyffmpeg_GUI import Pyffmpeg
 from lib.confighandler import ConfigHandler
 from lib.VERSION import Version
 
@@ -42,10 +42,10 @@ class GUI:
             [sg.Text("動画の保存先:"), sg.FolderBrowse(button_text="参照", enable_events=True, target="-completefolder-"), sg.InputText(ffmpegconfig["complete_folder"], expand_x=True, key="-completefolder-"), sg.Text("\\(ファイル名)_rife.", key="-videoname-"),sg.InputText(ffmpegconfig["video_extension"], (10,1), key="-videoextension-")]
         ])
 
-        self.console = sg.Multiline("", disabled=True, expand_x=True, expand_y=True)
+        self.console = sg.Output(expand_x=True, expand_y=True, )
 
         self.column_startstop = sg.Column(justification= "RIGHT", layout=[
-            [sg.Button("中止", disabled=True, key="-cancel"), sg.Button("実行", key="-run-")]
+            [sg.Button("中止", disabled=True, key="-cancel-"), sg.Button("実行", key="-run-")]
         ])
         
         self.layout = [
@@ -77,6 +77,7 @@ class Control:
 
             if event == "-run-":
                 self.GUI.window["-run-"].update(disabled=True)
+                self.GUI.window["-cancel-"].update(disabled=False)
                 self.work.ffmpeg.input_file = values["-inputfile-"]
                 self.work.ffmpeg.image_extension = values["-imageextension-"]
                 self.work.rife.output_extension = values["-imageextension-"]
@@ -96,7 +97,14 @@ class Control:
                 self.GUI.window["-run-"].update(disabled=False)
 
             if event == "-cancel-":
-                self.GUI.window.thre
+                try:
+                    self.work.ffmpeg.running_vid2img.kill()
+                    self.work.rife.running_rife.kill()
+                    self.work.ffmpeg.running_img2vid.kill()
+                except:
+                    pass
+                print("作業を中断しました")
+
                 
 
             if event == sg.WIN_CLOSED:
