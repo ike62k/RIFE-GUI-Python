@@ -44,7 +44,12 @@ class GUI:
 
         self.console = sg.Output(expand_x=True, expand_y=True, )
 
-        self.column_startstop = sg.Column(justification= "RIGHT", layout=[
+        self.debugmode = True
+        self.debug = sg.Column(layout=[
+            [sg.Text("status:", visible=self.debugmode), sg.Input("home", visible=self.debugmode, disabled=True, size=(5,1), key="-debug_status-")]
+        ])
+
+        self.column_startstop = sg.Column(justification="RIGHT", layout=[
             [sg.Button("中止", disabled=True, key="-cancel-"), sg.Button("実行", key="-run-")]
         ])
         
@@ -53,7 +58,7 @@ class GUI:
             [sg.Column([[self.column_ffmpeg_in, self.column_rife]], justification="CENTER")],
             [self.column_ffmpeg_out],
             [self.console],
-            [self.column_startstop]
+            [self.debug, self.column_startstop]
             ]
         self.window = sg.Window("RIFE", self.layout, size=(800,600), resizable=True)
 
@@ -63,19 +68,25 @@ class Control:
         self.work = Work(".\\setting\\config.ini")
         self.GUI = GUI(self.work.list_rifever, self.work.rife.config_data["USER"], self.work.ffmpeg.config_data["USER"])
 
+    def updatestatus(self,code: str):
+        self.GUI.window["-debug_status-"].update(code)
+
     def run(self):
         while True:
             event, values = self.GUI.window.read()
 
             if event == "-inputfile-":
+                self.updatestatus("inputfile")
                 self.GUI.window["-nowselectfile-"].update(values["-inputfile-"])
                 self.__inputfilevalue: str = os.path.basename(values["-inputfile-"])
                 if "." in self.__inputfilevalue:
                     self.GUI.window["-videoname-"].update(f"\\{self.__inputfilevalue.rsplit('.', 1)[0]}_rife.")
                 else:
                     self.GUI.window["-videoname-"].update(f"\\{self.__inputfilevalue}_rife.")
+                self.updatestatus("home")
 
             if event == "-run-":
+                self.updatestatus("run_change_setting")
                 self.GUI.window["-run-"].update(disabled=True)
                 self.GUI.window["-cancel-"].update(disabled=False)
                 self.work.ffmpeg.input_file = values["-inputfile-"]
@@ -88,15 +99,20 @@ class Control:
                 self.work.ffmpeg.video_extension = values["-videoextension-"]
                 self.work.ffmpeg.option = values["-option-"]
                 def run_all():
+                    self.updatestatus("run_vid2img")
                     self.work.ffmpeg.video_to_image()
+                    self.updatestatus("run_rife")
                     self.work.rife.run()
+                    self.updatestatus("run_img2vid")
                     self.work.ffmpeg.image_to_video(str(int(self.work.ffmpeg.get_framerate())*(2**int(self.work.rife.times))), self.work.ffmpeg.get_title(False))
                 self.GUI.window.start_thread(lambda: run_all(), end_key="-finish-")
 
             if event == "-finish-":
                 self.GUI.window["-run-"].update(disabled=False)
+                self.updatestatus("home")
 
             if event == "-cancel-":
+                self.updatestatus("cancel")
                 try:
                     self.work.ffmpeg.running_vid2img.kill()
                     self.work.rife.running_rife.kill()
@@ -104,6 +120,7 @@ class Control:
                 except:
                     pass
                 print("作業を中断しました")
+                self.updatestatus("home")
 
                 
 
