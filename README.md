@@ -118,10 +118,11 @@ FFmpeg用のconfigです。
 ## 既知の不具合
 - 音声streamを含まない動画が処理できない問題
 - `subprocess`において`shell=True`を使用していることによる誤作動のリスク
+- 整数値以外の秒間フレーム数を持つ動画が処理できない問題
 
 ## 修正及び機能追加予定
+- 次期Verより、PySimpleGUIを導入したGUIアプリとなる予定です。
 - 音声streamを含まない動画への対応
 - (時期未定)`subprocess`の`shell=True`を使用しない設計へのリファクタリング
-- PysimpleGUIを使用したGUIの実装
 - (未定)fletを使用したGUIの実装
 
