@@ -1,8 +1,5 @@
 import os
-import shutil
 import glob
-from concurrent.futures import ThreadPoolExecutor
-from tkinter import filedialog
 import PySimpleGUI as sg
 from lib.pyrife_ncnn_vulkan_GUI import Pyrife_ncnn_vulkan
 from lib.pyffmpeg_GUI import Pyffmpeg
@@ -39,7 +36,7 @@ class GUI:
 
         self.column_ffmpeg_out = sg.Frame("出力の設定", expand_x=True, layout=[
             [sg.Text("ffmpegの動画出力オプション:"), sg.InputText(ffmpegconfig["option"], expand_x=True, key="-option-")],
-            [sg.Text("動画の保存先:"), sg.FolderBrowse(button_text="参照", enable_events=True, target="-completefolder-"), sg.InputText(ffmpegconfig["complete_folder"], expand_x=True, key="-completefolder-"),sg.Text("\\"), sg.InputText("(ファイル名)", key="-videoname-", size=(20,1)),sg.Text("."),sg.InputText(ffmpegconfig["video_extension"], (10,1), key="-videoextension-")]
+            [sg.Text("動画の保存先:"), sg.FolderBrowse(button_text="参照", enable_events=True, target="-completefolder-"), sg.InputText(ffmpegconfig["complete_folder"], expand_x=True, key="-completefolder-"),sg.Text("\\"), sg.InputText("ファイル名", key="-videoname-", size=(20,1)),sg.Text("."),sg.InputText(ffmpegconfig["video_extension"], (10,1), key="-videoextension-")]
         ])
 
         self.console = sg.Output(expand_x=True, expand_y=True, )
@@ -109,7 +106,7 @@ class Control:
                         self.work.rife.run()
                     if self.status == "run_rife":
                         self.update_status("run_img2vid")
-                        self.work.ffmpeg.image_to_video(str(int(self.work.ffmpeg.get_framerate())*(2**int(self.work.rife.times))), values["-videoname-"])
+                        self.work.ffmpeg.image_to_video(str(float(self.work.ffmpeg.get_framerate())*(2**int(self.work.rife.times))), values["-videoname-"])
                 self.GUI.window.start_thread(lambda: run_all(), end_key="-finish-")
 
             if event == "-finish-":

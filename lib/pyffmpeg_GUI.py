@@ -234,12 +234,14 @@ class Pyffmpeg:
             self.input_folder
         except:
             raise self.FFmpegError("\"input_folder\" is not set. \"input_folder\"が設定されていません")
+        os.makedirs(self.input_folder, exist_ok=True)
         
     def _errorcheck_setoutputfolder(self):
         try:
             self.output_folder
         except:
             raise self.FFmpegError("\"output_folder\" is not set. \"output_folder\"が設定されていません")
+        os.makedirs(self.output_folder, exist_ok=True)
         
     def _errorcheck_setcompletefolder(self):
         try:
