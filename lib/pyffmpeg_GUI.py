@@ -177,7 +177,9 @@ class Pyffmpeg:
             stdout=subprocess.PIPE,
             text=True
             )
-        return self.__ffprobe.stdout.split(",")[1].split("/")[0]
+        #ffprobeの返り値がframerate,24000/1001\nの形のため、整形処理をしている
+        self.child, self.mother = (self.__ffprobe.stdout.split(",")[1]).replace("\n", "").split("/")
+        return self.child, self.mother
     
     def get_title(self, extension: bool = True) -> str:
         self._errorcheck_setinputfile()
@@ -204,7 +206,7 @@ class Pyffmpeg:
         self._errorcheck_all()
         print("Image to Video")
         self.running_img2vid = subprocess.Popen(
-            f"{self.ffmpegexe} -i {self.input_file} -r {target_framerate} -i {self.input_folder}\\rife%10d.{self.image_extension} -map 0:1 -map 1:0 -c:a copy {self.option} -r {target_framerate} {self.complete_folder}\\{target_title}.{self.video_extension}",
+            f"{self.ffmpegexe} -i {self.input_file} -r {target_framerate} -i \"{self.input_folder}\\rife%10d.{self.image_extension}\" -map 0:1 -map 1:0 -c:a copy {self.option} -r {target_framerate} \"{self.complete_folder}\\{target_title}.{self.video_extension}\"",
             shell=True,
             stdout=subprocess.PIPE
             )

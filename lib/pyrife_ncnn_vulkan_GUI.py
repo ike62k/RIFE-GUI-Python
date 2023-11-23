@@ -159,24 +159,7 @@ class Pyrife_ncnn_vulkan():
         self.apply_times_from_config()
 
 
-    #rife-ncnn-vulkanを実行
-    def __run_old(self):
-        self._errorcheck_all()
-        subprocess.run(
-            f"{self.rifeexe} -i {self.input_folder}/ -o {self.output_folder}/ -m {self.rifever}/ -j {self.rifeusage}/ -f rife%010d.{self.output_extension}", 
-            shell=True
-            )
-        if self.times == "4" and False:
-            os.rename(self.output_folder, "temp_rife")
-            print(self.output_folder) # test
-            print(f"{self.rifeexe} -i .\\temp_rife/ -o {self.output_folder}/ -m {self.rifever}/ -j {self.rifeusage}/ -f rife%010d.{self.output_extension}")
-            print(f"{self.rifeexe} -i {self.input_folder}/ -o {self.output_folder}/ -m {self.rifever}/ -j {self.rifeusage}/ -f rife%010d.{self.output_extension}")
-            input() #testここまで
-            subprocess.run(
-                f"{self.rifeexe} -i .\\temp_rife/ -o {self.output_folder}/ -m {self.rifever}/ -j {self.rifeusage}/ -f rife%010d.{self.output_extension}", 
-                shell=True
-                )
-        
+    #rife_ncnn_vulkanを実行
     def run(self):
         self._errorcheck_all()
         for count in range(1,int(self.times)+1):

@@ -39,7 +39,7 @@ class GUI:
             [sg.Text("動画の保存先:"), sg.FolderBrowse(button_text="参照", enable_events=True, target="-completefolder-"), sg.InputText(ffmpegconfig["complete_folder"], expand_x=True, key="-completefolder-"),sg.Text("\\"), sg.InputText("ファイル名", key="-videoname-", size=(20,1)),sg.Text("."),sg.InputText(ffmpegconfig["video_extension"], (10,1), key="-videoextension-")]
         ])
 
-        self.console = sg.Output(expand_x=True, expand_y=True, )
+        self.console = sg.Output(expand_x=True, expand_y=True)
 
         self.debugmode = True
         self.debug = sg.Column(layout=[
@@ -70,6 +70,13 @@ class Control:
         self.status = code
         self.GUI.window["-debug_status-"].update(self.status)
 
+    def calc_framerate(self) -> str:
+        child, mother = self.work.ffmpeg.get_framerate()
+        if mother != "1":
+            return f"{int(child)*(2**int(self.work.rife.times))}/{mother}"
+        else:
+            return f"{int(child)*(2**int(self.work.rife.times))}"
+
     def run(self):
         while True:
             event, values = self.GUI.window.read()
@@ -77,11 +84,6 @@ class Control:
             if event == "-inputfile-":
                 self.update_status("inputfile")
                 self.GUI.window["-nowselectfile-"].update(values["-inputfile-"])
-#                self.__inputfilevalue: str = os.path.basename(values["-inputfile-"])
-#                if "." in self.__inputfilevalue:
-#                    self.GUI.window["-videoname-"].update(f"\\{self.__inputfilevalue.rsplit('.', 1)[0]}_rife.")
-#                else:
-#                    self.GUI.window["-videoname-"].update(f"\\{self.__inputfilevalue}_rife.")
                 self.update_status("home")
 
             if event == "-run-":
@@ -97,7 +99,7 @@ class Control:
                 self.work.rife.times = values["-times-"]
                 self.work.ffmpeg.video_extension = values["-videoextension-"]
                 self.work.ffmpeg.option = values["-option-"]
-                def run_all():
+                def process():
                     if self.status == "run_change_setting":
                         self.update_status("run_vid2img")
                         self.work.ffmpeg.video_to_image()
@@ -106,8 +108,8 @@ class Control:
                         self.work.rife.run()
                     if self.status == "run_rife":
                         self.update_status("run_img2vid")
-                        self.work.ffmpeg.image_to_video(str(float(self.work.ffmpeg.get_framerate())*(2**int(self.work.rife.times))), values["-videoname-"])
-                self.GUI.window.start_thread(lambda: run_all(), end_key="-finish-")
+                        self.work.ffmpeg.image_to_video(self.calc_framerate(), values["-videoname-"])
+                self.GUI.window.start_thread(lambda: process(), end_key="-finish-")
 
             if event == "-finish-":
                 self.GUI.window["-run-"].update(disabled=False)
@@ -125,9 +127,7 @@ class Control:
                     self.update_status("cancel_img2vid")
                     self.work.ffmpeg.running_img2vid.kill()
                 print("作業を中断しました")
-                self.update_status("home")
-
-                
+                self.update_status("home")     
 
             if event == sg.WIN_CLOSED:
                 break
