@@ -26,7 +26,7 @@ class GUI:
             [sg.Text("選択されたファイル:"), sg.Text("", key="-nowselectfile-", expand_x=True)]])
         
         self.column_ffmpeg_in = sg.Frame("FFmpegによる前処理の設定", expand_x=True, layout=[
-            [sg.Text("画像の拡張子:", (18,1)), sg.InputText(ffmpegconfig["image_extension"], (10,1), key="-imageextension-")]
+            [sg.Text("画像の拡張子:", (18,1)), sg.Combo(["png", "jpg"],ffmpegconfig["image_extension"], (10,1), key="-imageextension-")]
         ])
         
         self.column_rife = sg.Frame("RIFEの設定", expand_x=True, layout=[
@@ -36,7 +36,7 @@ class GUI:
 
         self.column_ffmpeg_out = sg.Frame("出力の設定", expand_x=True, layout=[
             [sg.Text("ffmpegの動画出力オプション:"), sg.InputText(ffmpegconfig["option"], expand_x=True, key="-option-")],
-            [sg.Text("動画の保存先:"), sg.FolderBrowse(button_text="参照", enable_events=True, target="-completefolder-"), sg.InputText(ffmpegconfig["complete_folder"], expand_x=True, key="-completefolder-"),sg.Text("\\"), sg.InputText("ファイル名", key="-videoname-", size=(20,1)),sg.Text("."),sg.InputText(ffmpegconfig["video_extension"], (10,1), key="-videoextension-")]
+            [sg.Text("動画の保存先:"), sg.FolderBrowse(button_text="参照", enable_events=True, target="-completefolder-"), sg.InputText(ffmpegconfig["complete_folder"], expand_x=True, key="-completefolder-"),sg.Text("\\"), sg.InputText("ファイル名", key="-videotitle-", size=(20,1)),sg.Text("."),sg.InputText(ffmpegconfig["video_extension"], (10,1), key="-videoextension-")]
         ])
 
         self.console = sg.Output(expand_x=True, expand_y=True)
@@ -76,29 +76,104 @@ class Control:
             return f"{int(child)*(2**int(self.work.rife.times))}/{mother}"
         else:
             return f"{int(child)*(2**int(self.work.rife.times))}"
+    
+    def isinputfile(self):
+        if self.status != "run_change_setting":
+            return None
+        if not os.path.isfile(self.values["-inputfile-"]):
+            sg.popup_error("入力ファイルが存在しません")
+            self.update_status("err_inputfile")
+        
+    def same_name_as_outputfile(self):
+        if self.status != "run_change_setting":
+            return None
+        if os.path.isfile(f"{self.values["-completefolder-"]}\\{self.values["-videotitle-"]}.{self.values["-videoextension-"]}"):
+            ans = sg.popup_ok_cancel("出力ファイルと同じ名前を持つファイルが既に存在します\n上書きしますか？")
+            if ans != "OK":
+                self.update_status("err_samename")
+
+    def check_rifeusage(self):
+        if self.status != "run_change_setting":
+            return None
+        try:
+            q1, q2, q3 = map(int, (self.values["-rifeusage-"]).split(":"))
+        except:
+            sg.popup_error("rifeusageは\"(int):(int):(int)で\"表記する必要があります")
+            self.update_status("err_rifeusage")
+            return None
+        if q1 < 1 & q2 < 1 & q3 < 1:
+            sg.popup_error("rifeusageに使用できる数は自然数のみです")
+            self.update_status("err_rifeusage")
+
+    def check_rifegpu(self):
+        if self.status != "run_change_setting":
+            return None
+        try:
+            number = list(map(int, (self.values["-rifegpu-"]).split(",")))
+        except:
+            sg.popup_error("rifegpuに使用できる数は-1以上の整数値のみです\n-1→CPU, 0,1,2...→GPU\nスペース抜きカンマ区切りでマルチGPU")
+            self.update_status("err_rifegpu")
+            return None
+        if len(number) != len(set(number)):
+            sg.popup_error("同じIDを2回以上指定することはできません")
+            self.update_status("err_rifegpu")
+            return None
+        for i in number:
+            if i < -1:
+                sg.popup_error("rifegpuに使用できる数は-1以上の整数値のみです\n-1→CPU, 0,1,2...→GPU\nスペース抜きカンマ区切りでマルチGPU")
+                self.update_status("err_rifegpu")
+                return None
+            
+    def check_times(self):
+        if self.status != "run_change_setting":
+            return None
+        try:
+            number = int(self.values["-times-"])
+        except:
+            sg.popup_error("timesに使用できる数は自然数のみです")
+            self.update_status("err_times")
+            return None
+        if number < 1:
+            sg.popup_error("timesに使用できる数は自然数のみです")
+            self.update_status("err_times")
+            return None
 
     def run(self):
         while True:
-            event, values = self.GUI.window.read()
+            self.event, self.values = self.GUI.window.read()
 
-            if event == "-inputfile-":
+            if self.event == "-inputfile-":
                 self.update_status("inputfile")
-                self.GUI.window["-nowselectfile-"].update(values["-inputfile-"])
+                self.GUI.window["-nowselectfile-"].update(self.values["-inputfile-"])
                 self.update_status("home")
 
-            if event == "-run-":
+            if self.event == "-run-":
+                #GUI上の変更
                 self.update_status("run_change_setting")
                 self.GUI.window["-run-"].update(disabled=True)
                 self.GUI.window["-cancel-"].update(disabled=False)
-                self.work.ffmpeg.input_file = values["-inputfile-"]
-                self.work.ffmpeg.image_extension = values["-imageextension-"]
-                self.work.rife.output_extension = values["-imageextension-"]
-                self.work.rife.rifever = values["-rifever-"]
-                self.work.rife.rifeusage = values["-rifeusage-"]
-                self.work.rife.rifegpu = values["-rifegpu-"]
-                self.work.rife.times = values["-times-"]
-                self.work.ffmpeg.video_extension = values["-videoextension-"]
-                self.work.ffmpeg.option = values["-option-"]
+                #パラメータの妥当性をチェック
+                #inputfile
+                self.isinputfile()
+                #outputfile
+                self.same_name_as_outputfile()
+                #rifeusage
+                self.check_rifeusage()
+                #rifegpu
+                self.check_rifegpu()
+                #times
+                self.check_times()
+                #各パラメータを変数に代入
+                self.work.ffmpeg.input_file = self.values["-inputfile-"]
+                self.work.ffmpeg.image_extension = self.values["-imageextension-"]
+                self.work.rife.output_extension = self.values["-imageextension-"]
+                self.work.rife.rifever = self.values["-rifever-"]
+                self.work.rife.rifeusage = self.values["-rifeusage-"]
+                self.work.rife.rifegpu = self.values["-rifegpu-"]
+                self.work.rife.times = self.values["-times-"]
+                self.work.ffmpeg.video_extension = self.values["-videoextension-"]
+                self.work.ffmpeg.option = self.values["-option-"]
+                #処理部分の定義
                 def process():
                     if self.status == "run_change_setting":
                         self.update_status("run_vid2img")
@@ -108,15 +183,16 @@ class Control:
                         self.work.rife.run()
                     if self.status == "run_rife":
                         self.update_status("run_img2vid")
-                        self.work.ffmpeg.image_to_video(self.calc_framerate(), values["-videoname-"])
+                        self.work.ffmpeg.image_to_video(self.calc_framerate(), self.values["-videotitle-"])
+                #処理部分をプロセス化して実行
                 self.GUI.window.start_thread(lambda: process(), end_key="-finish-")
 
-            if event == "-finish-":
+            if self.event == "-finish-":
                 self.GUI.window["-run-"].update(disabled=False)
                 self.GUI.window["-cancel-"].update(disabled=True)
                 self.update_status("home")
 
-            if event == "-cancel-":
+            if self.event == "-cancel-":
                 if self.status == "run_vid2img":
                     self.update_status("cancel_vid2img")
                     self.work.ffmpeg.running_vid2img.kill()
@@ -130,7 +206,7 @@ class Control:
                 print("作業を中断しました")
                 self.update_status("home")     
 
-            if event == sg.WIN_CLOSED:
+            if self.event == sg.WIN_CLOSED:
                 break
 
         self.GUI.window.close()
