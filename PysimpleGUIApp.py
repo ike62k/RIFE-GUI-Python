@@ -121,8 +121,9 @@ class Control:
                     self.update_status("cancel_vid2img")
                     self.work.ffmpeg.running_vid2img.kill()
                 if self.status == "run_rife":
-                    self.update_status("cancel_rife")
-                    self.work.rife.running_rife.kill()
+                    for _ in range(int(self.work.rife.times)):
+                        self.update_status("cancel_rife")
+                        self.work.rife.running_rife.kill()
                 if self.status == "run_img2vid":
                     self.update_status("cancel_img2vid")
                     self.work.ffmpeg.running_img2vid.kill()
