@@ -39,9 +39,10 @@ class GUI:
             [sg.Text("動画の保存先:"), sg.FolderBrowse(button_text="参照", enable_events=True, target="-completefolder-"), sg.InputText(ffmpegconfig["complete_folder"], expand_x=True, key="-completefolder-"),sg.Text("\\"), sg.InputText("ファイル名", key="-videotitle-", size=(20,1)),sg.Text("."),sg.InputText(ffmpegconfig["video_extension"], (10,1), key="-videoextension-")]
         ])
 
-        self.console = sg.Output(expand_x=True, expand_y=True)
-
         self.debugmode = True
+
+        self.console = sg.Output(expand_x=True, expand_y=True, echo_stdout_stderr=self.debugmode)
+
         self.debug = sg.Column(layout=[
             [sg.Text("status:", visible=self.debugmode), sg.Input("home", visible=self.debugmode, disabled=True, size=(12,1), key="-debug_status-")]
         ])
