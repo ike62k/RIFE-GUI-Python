@@ -1,6 +1,6 @@
 # RIFE AUTOMATION TOOL PYTHON
 copyright 2023 びろーど(Veludo)<br>
-このREADMEはVersion 2.x用に書かれたものです。Version 1.xとの互換性はありません。
+このREADMEはVersion 2.1~用に書かれたものです。Version 1.x, 2.0との互換性はありません。
 
 ## はじめに
 このソフトウェアは趣味の一環として作成されたものです。本ソフトウェアを使用したいかなる結果についても作者は責任を負いません。<br>
@@ -10,8 +10,10 @@ ffmpeg及びffprobeのライセンスは.\lib\ffmpeg\LICENSE_for_FFmpegを参照
 RIFE-ncnn-Vulkanのライセンスは.\lib\rife_ncnn_vulkan\LICENSE_for_RIFE-ncnn-Vulkanを参照してください。
 ## 動作(確認済み)環境
 - windows10 or windows11
-- Python 3.12(以前のVerでも動く可能性はあります※未検証)
-- (あったらいいな)Intel,AMD,NVIDIAの外付けGPU
+- [Python 3.12](https://www.python.org/)(以前のVerでも動く可能性はあります※未検証)
+- [PySimpleGUI](https://www.pysimplegui.org/en/latest/)
+- 画像デコードで使うためCPUパワーがあると処理が早くなります
+- RIFEの処理、エンコード等で使うためIntel,AMD,NVIDIAのdGPUがあると処理が早くなります
 
 ## 使用させていただいているソフトウェア
 - [FFmpeg(LGPL)](https://github.com/BtbN/FFmpeg-Builds/releases/tag/autobuild-2023-11-11-12-54)
@@ -21,7 +23,7 @@ RIFE-ncnn-Vulkanのライセンスは.\lib\rife_ncnn_vulkan\LICENSE_for_RIFE-ncn
 ## どんなソフトウェア？
 映像の前後コマから間のコマを生成するソフトウェア[RIFE-ncnn-Vulkan](https://github.com/nihui/rife-ncnn-vulkan)をより便利に活用するためのソフトウェアです。<br>
 FFmpegとRIFE-ncnn-Vulkanを組み合わせて、元動画を2倍補完したものを生成します。<br>
-動作にはWindows環境とそこで動作するPythonが必要です。Pythonの外部ライブラリは使用していません。<br>
+動作にはWindows環境とそこで動作するPython、外部ライブラリであるPySimpleGUIが必要です。<br>
 Pythonの基本ライブラリとして以下のライブラリを使用しています。
 - `os`
 - `glob`
@@ -43,30 +45,22 @@ Pythonの基本ライブラリとして以下のライブラリを使用して�
 ## 使い方
 
 ### 起動手順
-1. Pythonをインストールします。
-2. 本プロジェクトのReleaseページからソースコードをダウンロードします。
-3. 適当な場所で展開します
-4. App.pyを実行します
+1. [Python](https://www.python.org/)をインストールします
+2. [PySimpleGUI](https://www.pysimplegui.org/en/latest/)をインストールします
+3. 本プロジェクトの[Release](https://github.com/ike62k/RIFEAutomationToolPython/releases)よりソースコードをインストールします
+4. ルートフォルダ内PySimpleGUIApp.pyを実行します
 
-### App.pyの操作方法
-App.pyはいくつかのコマンドを入力して動作します。<br>
-コマンド一覧は以下の通りです。
-- `-help` コマンドの一覧を表示します
-- `-version` バージョン情報を表示します
-- `-file` 動画選択用にファイル選択ダイアログを表示します
-- `-reload` pyrife_ncnn_vulkan.ini,pyffmpeg.iniの各パラメータを最新の状態に更新します
-- `-status` 現在のpyrife_ncnn_vulkan.ini,pyffmpeg.iniの各パラメータを表示します
-- `-run` 補完処理を開始します
-- `-exit` ソフトウェアを終了します
+### アプリケーションの操作方法
+本ソフトウェアはPySimpleGUIによるGUIとなっています。<br>
+入力ファイル、設定値、出力ファイル名を指定して開始を押すと処理が開始されます。
 
 ## 各種設定について
 本ソフトウェアでは、ユーザーごとの環境に合わせて柔軟に設定を操作できるよう、configファイルを設定しています。<br>
 全てのconfigファイルは.\setting内に存在します。<br>
 一切configファイルに手を付けなくても動作しますが、できるだけ環境に合わせてconfigファイルを変更することをおすすめします。<br>
-上項**App.pyの操作方法**に記載している通り、App.pyには`-reload`というコマンドがあります。<br>
-これを使用することでApp.pyを起動した後でも、configファイルの値の変更を反映することができます<br>
-configファイルに加筆したあとに、App.pyで`-reload`を実行すると変更が反映されます。<br>
-※一度`-run`を実行すると処理が終了するまでconfigの変化は反映できません
+ソフトウェアを起動した際の初期値としてconfigファイル内の設定値が反映されます。<br>
+これを使用することで普段使う設定を簡単に呼び出すことができます。<br>
+一度ソフトウェアを起動するとconfigファイルを書き換えても内容は変わりません
 
 ### 共通
 - configファイルは`[DEFAULT]`セクションと`[USER]`セクションによって構成されています。
@@ -77,10 +71,10 @@ configファイルに加筆したあとに、App.pyで`-reload`を実行する�
 - `value`の前後のスペースは無視されます。 例) `A = value`と`A=value`は同値です `A = value1 value2`と`A = value1value2`は同値ではありません
 
 ### config.ini
-App.py起動用のconfigです。基本的には触らなくて大丈夫です
+App.py起動用のconfigです。基本的には触らなくて大丈夫です。
 - `pyrife_ncnn_vulkan_config` 下記pyrife_ncnn_vulkan.iniの場所を指定します。
 - `pyffmpeg_config` 下記pyffmpeg.iniの場所を指定します
-- **このファイルは動かさないようにしてください(App.pyが全configを認識できなくなります)**
+- **このファイルは動かさないようにしてください(ソフトウェアがが全configを認識できなくなります)**
 
 ### pyrife_ncnn_vulkan.ini
 RIFE-ncnn-Vulkan用のconfigです。
@@ -111,9 +105,12 @@ FFmpeg用のconfigです。
 - 著作権で保護された映像の加工及び公開は法律に反する場合があります。作者は責任を負いかねますので、使用方法にはお気をつけください。
 
 ## 今アップデートで追加された内容
-- 無印rifeが使用できない不具合の解消
-合わせてpyrife_ncnn_vulkan.iniの`rifever`の書き方が変わりました<br>
-例) `rifever = v4.6` →`rifever = rife-v4.6`
+- GUIの実装
+PySimpleGUIを使用したGUIを実装しました。<br>
+これに伴い、PySimpleGUIが必要要件となります<br>
+また、一部の仕様が変更になりました。
+- パラメータに不備があった際のエラー実装<br>
+GUIで動作することによって、パラメータが正しい形式で入力されていないときのエラーがでるように変更しました。
 
 ## 既知の不具合
 - 音声streamを含まない動画が処理できない問題
@@ -121,8 +118,5 @@ FFmpeg用のconfigです。
 - 整数値以外の秒間フレーム数を持つ動画が処理できない問題
 
 ## 修正及び機能追加予定
-- 次期Verより、PySimpleGUIを導入したGUIアプリとなる予定です。
 - 音声streamを含まない動画への対応
 - (時期未定)`subprocess`の`shell=True`を使用しない設計へのリファクタリング
-- (未定)fletを使用したGUIの実装
-

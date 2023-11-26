@@ -177,7 +177,9 @@ class Pyffmpeg:
             stdout=subprocess.PIPE,
             text=True
             )
-        return self.__ffprobe.stdout.split(",")[1].split("/")[0]
+        #ffprobeの返り値がframerate,24000/1001\nの形のため、整形処理をしている
+        self.child, self.mother = (self.__ffprobe.stdout.split(",")[1]).replace("\n", "").split("/")
+        return self.child, self.mother
     
     def get_title(self, extension: bool = True) -> str:
         self._errorcheck_setinputfile()
@@ -188,17 +190,30 @@ class Pyffmpeg:
 
     def video_to_image(self):
         self._errorcheck_all()
-        subprocess.run(
+        print("Video to Image")
+        self.running_vid2img = subprocess.Popen(
             f"{self.ffmpegexe} -i {self.input_file} -an {self.output_folder}\\%10d.{self.image_extension}",
-            shell=True
+            shell=True,
+            stdout=subprocess.PIPE
             )
+        while True:
+            stdout = self.running_vid2img.poll()
+            if stdout != None:
+                break
+        
         
     def image_to_video(self, target_framerate: str, target_title: str):
         self._errorcheck_all()
-        subprocess.run(
-            f"{self.ffmpegexe} -i {self.input_file} -r {target_framerate} -i {self.input_folder}\\rife%10d.{self.image_extension} -map 0:1 -map 1:0 -c:a copy {self.option} -r {target_framerate} {self.complete_folder}\\{target_title}_rife.{self.video_extension}",
-            shell=True
-        )
+        print("Image to Video")
+        self.running_img2vid = subprocess.Popen(
+            f"{self.ffmpegexe} -i {self.input_file} -r {target_framerate} -i \"{self.input_folder}\\rife%10d.{self.image_extension}\" -map 0:1 -map 1:0 -c:a copy -y {self.option} -r {target_framerate} \"{self.complete_folder}\\{target_title}.{self.video_extension}\"",
+            shell=True,
+            stdout=subprocess.PIPE
+            )
+        while True:
+            stdout = self.running_img2vid.poll()
+            if stdout != None:
+                break
         shutil.rmtree(self.input_folder, True)
 
 
@@ -210,18 +225,25 @@ class Pyffmpeg:
             self.input_file
         except:
             raise self.FFmpegError("\"input_file\" is not set. \"input_file\"が設定されていません")
+        
+        if os.path.isfile(self.input_file):
+            pass
+        else:
+            raise self.FFmpegError("存在しないファイルが\"input_file\"に指定されています")
 
     def _errorcheck_setinputfolder(self):
         try:
             self.input_folder
         except:
             raise self.FFmpegError("\"input_folder\" is not set. \"input_folder\"が設定されていません")
+        os.makedirs(self.input_folder, exist_ok=True)
         
     def _errorcheck_setoutputfolder(self):
         try:
             self.output_folder
         except:
             raise self.FFmpegError("\"output_folder\" is not set. \"output_folder\"が設定されていません")
+        os.makedirs(self.output_folder, exist_ok=True)
         
     def _errorcheck_setcompletefolder(self):
         try:

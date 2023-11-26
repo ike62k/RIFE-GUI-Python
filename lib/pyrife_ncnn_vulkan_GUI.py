@@ -159,54 +159,51 @@ class Pyrife_ncnn_vulkan():
         self.apply_times_from_config()
 
 
-    #rife-ncnn-vulkanを実行
-    def __run_old(self):
-        self._errorcheck_all()
-        subprocess.run(
-            f"{self.rifeexe} -i {self.input_folder}/ -o {self.output_folder}/ -m {self.rifever}/ -j {self.rifeusage}/ -f rife%010d.{self.output_extension}", 
-            shell=True
-            )
-        if self.times == "4" and False:
-            os.rename(self.output_folder, "temp_rife")
-            print(self.output_folder) # test
-            print(f"{self.rifeexe} -i .\\temp_rife/ -o {self.output_folder}/ -m {self.rifever}/ -j {self.rifeusage}/ -f rife%010d.{self.output_extension}")
-            print(f"{self.rifeexe} -i {self.input_folder}/ -o {self.output_folder}/ -m {self.rifever}/ -j {self.rifeusage}/ -f rife%010d.{self.output_extension}")
-            input() #testここまで
-            subprocess.run(
-                f"{self.rifeexe} -i .\\temp_rife/ -o {self.output_folder}/ -m {self.rifever}/ -j {self.rifeusage}/ -f rife%010d.{self.output_extension}", 
-                shell=True
-                )
-        
+    #rife_ncnn_vulkanを実行
     def run(self):
         self._errorcheck_all()
         for count in range(1,int(self.times)+1):
             print(f"{2**(int(count)-1)}x→{2**int(count)}x work:{count}")
 
+            def test(process: subprocess.Popen):
+                while True:
+                    stdout = process.poll()
+                    if stdout != None:
+                        break
+
             if int(self.times) == 1: #総補完回数が1回
-                subprocess.run(
+                self.running_rife = subprocess.Popen(
                 f"{self.rifeexe} -i {self.input_folder}/ -o {self.output_folder}/ -m {self.rifever}/ -j {self.rifeusage}/ -f rife%010d.{self.output_extension}", 
-                shell=True
+                shell=True,
+                stdout=subprocess.PIPE,
                 )
+                test(self.running_rife)
                 shutil.rmtree(self.input_folder, True)
             elif count == 1: #総補完回数が1回でないときの1回目
                 os.makedirs(f".\\temp_rife_{count}")
-                subprocess.run(
+                self.running_rife = subprocess.Popen(
                 f"{self.rifeexe} -i {self.input_folder}/ -o .\\temp_rife_{count}/ -m {self.rifever}/ -j {self.rifeusage}/ -f rife%010d.{self.output_extension}", 
-                shell=True
+                shell=True,
+                stdout=subprocess.PIPE
                 )
+                test(self.running_rife)
                 shutil.rmtree(self.input_folder, True)
             elif count < int(self.times): #2回目~(最終でない)
                 os.makedirs(f".\\temp_rife_{count}")
-                subprocess.run(
+                self.running_rife = subprocess.Popen(
                 f"{self.rifeexe} -i .\\temp_rife_{int(count)-1}/ -o .\\temp_rife_{count}/ -m {self.rifever}/ -j {self.rifeusage}/ -f rife%010d.{self.output_extension}", 
-                shell=True
+                shell=True,
+                stdout=subprocess.PIPE
                 )
+                test(self.running_rife)
                 shutil.rmtree(f".\\temp_rife_{int(count)-1}", True)
             else: #最終
-                subprocess.run(
+                self.running_rife = subprocess.Popen(
                 f"{self.rifeexe} -i .\\temp_rife_{int(count)-1}/ -o {self.output_folder}/ -m {self.rifever}/ -j {self.rifeusage}/ -f rife%010d.{self.output_extension}", 
-                shell=True
+                shell=True,
+                stdout=subprocess.PIPE
                 )
+                test(self.running_rife)
                 shutil.rmtree(f".\\temp_rife_{int(count)-1}", True)
 
     def _chenge_inout(self):
@@ -232,12 +229,14 @@ class Pyrife_ncnn_vulkan():
             self.input_folder
         except:
             raise self.RifeError("\"input_folder\" is not set. \"input_folder\"が設定されていません")
+        os.makedirs(self.input_folder, exist_ok=True)
         
     def _errorcheck_setoutputfolder(self):
         try:
             self.output_folder
         except:
             raise self.RifeError("\"output_folder\" is not set. \"output_folder\"が設定されていません")
+        os.makedirs(self.output_folder, exist_ok=True)
 
     def _errorcheck_setoutputextension(self):
         try:
