@@ -1,5 +1,6 @@
 import os
 import glob
+import shutil
 import PySimpleGUI as sg
 from lib.pyrife_ncnn_vulkan_GUI import Pyrife_ncnn_vulkan
 from lib.pyffmpeg_GUI import Pyffmpeg
@@ -19,7 +20,7 @@ class Work:
 
 
 class GUI:
-    def __init__(self, list_rifever, rifeconfig, ffmpegconfig):
+    def __init__(self, list_rifever, rifeconfig, ffmpegconfig, version):
 
         self.column_inputfile = sg.Frame("ファイル選択", expand_x=True, layout=[
             [sg.Text("ファイルを指定してください:"), sg.InputText(expand_x=True, key = "-inputfile-", enable_events=True), sg.FileBrowse(button_text="参照", enable_events=True)],
@@ -43,6 +44,8 @@ class GUI:
 
         self.console = sg.Output(expand_x=True, expand_y=True, echo_stdout_stderr=self.debugmode)
 
+        self.versiondata = sg.Text(f"Version:{version}", key="-version-", expand_x=True)
+
         self.debug = sg.Column(layout=[
             [sg.Text("status:", visible=self.debugmode), sg.Input("home", visible=self.debugmode, disabled=True, size=(12,1), key="-debug_status-")]
         ])
@@ -56,15 +59,16 @@ class GUI:
             [sg.Column([[self.column_ffmpeg_in, self.column_rife]], justification="CENTER")],
             [self.column_ffmpeg_out],
             [self.console],
-            [self.debug, self.column_startstop]
+            [self.versiondata, self.debug, self.column_startstop]
             ]
         self.window = sg.Window("RIFE", self.layout, size=(800,600), resizable=True)
 
 
 class Control:
     def __init__(self):
+        self.version = Version()        
         self.work = Work(".\\setting\\config.ini")
-        self.GUI = GUI(self.work.list_rifever, self.work.rife.config_data["USER"], self.work.ffmpeg.config_data["USER"])
+        self.GUI = GUI(self.work.list_rifever, self.work.rife.config_data["USER"], self.work.ffmpeg.config_data["USER"], self.version.version)
         self.status = "home"
 
     def update_status(self, code: str):
@@ -174,6 +178,10 @@ class Control:
                 self.work.rife.times = self.values["-times-"]
                 self.work.ffmpeg.video_extension = self.values["-videoextension-"]
                 self.work.ffmpeg.option = self.values["-option-"]
+                #一時フォルダの初期化
+                for i in [self.work.ffmpeg.input_folder, self.work.ffmpeg.output_folder]:
+                    shutil.rmtree(i, ignore_errors=True)
+                    os.makedirs(i, exist_ok=True)
                 #処理部分の定義
                 def process():
                     if self.status == "run_change_setting":
@@ -191,6 +199,7 @@ class Control:
             if self.event == "-finish-":
                 self.GUI.window["-run-"].update(disabled=False)
                 self.GUI.window["-cancel-"].update(disabled=True)
+                print("処理が完了しました")
                 self.update_status("home")
 
             if self.event == "-cancel-":

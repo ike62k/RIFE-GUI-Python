@@ -12,8 +12,8 @@ RIFE-ncnn-Vulkanのライセンスは.\lib\rife_ncnn_vulkan\LICENSE_for_RIFE-ncn
 - windows10 or windows11
 - [Python 3.12](https://www.python.org/)(以前のVerでも動く可能性はあります※未検証)
 - [PySimpleGUI](https://www.pysimplegui.org/en/latest/)
-- (画像デコードで使うので)CPUパワー
-- (RIFEの処理、エンコード等で使うので)Intel,AMD,NVIDIAの外付けGPU
+- 画像デコードで使うためCPUパワーがあると処理が早くなります
+- RIFEの処理、エンコード等で使うためIntel,AMD,NVIDIAのdGPUがあると処理が早くなります
 
 ## 使用させていただいているソフトウェア
 - [FFmpeg(LGPL)](https://github.com/BtbN/FFmpeg-Builds/releases/tag/autobuild-2023-11-11-12-54)
@@ -58,8 +58,8 @@ Pythonの基本ライブラリとして以下のライブラリを使用して�
 本ソフトウェアでは、ユーザーごとの環境に合わせて柔軟に設定を操作できるよう、configファイルを設定しています。<br>
 全てのconfigファイルは.\setting内に存在します。<br>
 一切configファイルに手を付けなくても動作しますが、できるだけ環境に合わせてconfigファイルを変更することをおすすめします。<br>
-ソフトウェアを起動した際の初期値としてconfigファイル内の設定値が反映されます<br>
-これを使用することで普段使う設定を簡単に呼び出すことができます<br>
+ソフトウェアを起動した際の初期値としてconfigファイル内の設定値が反映されます。<br>
+これを使用することで普段使う設定を簡単に呼び出すことができます。<br>
 一度ソフトウェアを起動するとconfigファイルを書き換えても内容は変わりません
 
 ### 共通
@@ -71,10 +71,10 @@ Pythonの基本ライブラリとして以下のライブラリを使用して�
 - `value`の前後のスペースは無視されます。 例) `A = value`と`A=value`は同値です `A = value1 value2`と`A = value1value2`は同値ではありません
 
 ### config.ini
-App.py起動用のconfigです。基本的には触らなくて大丈夫です
+App.py起動用のconfigです。基本的には触らなくて大丈夫です。
 - `pyrife_ncnn_vulkan_config` 下記pyrife_ncnn_vulkan.iniの場所を指定します。
 - `pyffmpeg_config` 下記pyffmpeg.iniの場所を指定します
-- **このファイルは動かさないようにしてください(App.pyが全configを認識できなくなります)**
+- **このファイルは動かさないようにしてください(ソフトウェアがが全configを認識できなくなります)**
 
 ### pyrife_ncnn_vulkan.ini
 RIFE-ncnn-Vulkan用のconfigです。
@@ -109,7 +109,7 @@ FFmpeg用のconfigです。
 PySimpleGUIを使用したGUIを実装しました。<br>
 これに伴い、PySimpleGUIが必要要件となります<br>
 また、一部の仕様が変更になりました。
-- パラメータに不備があった際のエラー実装
+- パラメータに不備があった際のエラー実装<br>
 GUIで動作することによって、パラメータが正しい形式で入力されていないときのエラーがでるように変更しました。
 
 ## 既知の不具合
