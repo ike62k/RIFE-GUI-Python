@@ -1,6 +1,11 @@
-# RIFE AUTOMATION TOOL PYTHON
+# RIFE-GUI-Python
 copyright 2023 びろーど(Veludo)<br>
-このREADMEはVersion 2.1~用に書かれたものです。Version 1.x, 2.0との互換性はありません。
+
+RIFE-ncnn-Vulkanによる補完処理、並びにFFmpegによる動画から画像への変換、画像から動画への変換をGUIで操作できるようにしたソフトウェアです。
+This software enables GUI-based operation of the interpolation process by RIFE-ncnn-Vulkan, as well as video-to-image and image-to-video conversion by FFmpeg.
+
+このREADMEはVersion 2.2~ 用に書かれたものです。~Version 2.1との互換性はありません。
+This README is written for Version 2.2~. ~It is not compatible with ~Version 2.1.
 
 ## はじめに
 このソフトウェアは趣味の一環として作成されたものです。本ソフトウェアを使用したいかなる結果についても作者は責任を負いません。<br>
@@ -103,6 +108,7 @@ FFmpeg用のconfigです。
 - FFmpeg,FFprobe,RIFE-ncnn-Vulkanは全て実行ファイルを`subprocess`で呼び出しています。
     その際に、`shell=True`を使用しています。設定値にシェルがコマンドと誤認識する値があると、シェルインジェクションなどの危険性があります。
 - 著作権で保護された映像の加工及び公開は法律に反する場合があります。作者は責任を負いかねますので、使用方法にはお気をつけください。
+- 動作中は大量の画像フレームが生成される場合があります。特にPNG形式ではFHD画質で1フレームあたり4MBほどのサイズとなります。一時ファイルは基本的にルートフォルダに生成されますので、保存先となるドライブには十分な空きをお持ちください。
 
 ## 今アップデートで追加された内容
 - ファイル構成の見直し
