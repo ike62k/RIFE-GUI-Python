@@ -2,7 +2,7 @@ import subprocess
 import glob
 import os
 import shutil
-from lib.confighandler import ConfigHandler
+from .libs.confighandler import ConfigHandler
 
 class Pyrife_ncnn_vulkan():
     #コンフィグの初回ロードと適用

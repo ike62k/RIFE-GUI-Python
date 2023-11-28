@@ -1,0 +1,6 @@
+-requirements about Python
+Python  >= 3.12
+PySimpleGUI >= 4.60.5
+
+-requirements about OS
+Windows 10 or 11 (x64)

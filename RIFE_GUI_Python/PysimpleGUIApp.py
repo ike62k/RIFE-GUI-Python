@@ -2,10 +2,10 @@ import os
 import glob
 import shutil
 import PySimpleGUI as sg
-from lib.pyrife_ncnn_vulkan_GUI import Pyrife_ncnn_vulkan
-from lib.pyffmpeg_GUI import Pyffmpeg
-from lib.confighandler import ConfigHandler
-from lib.VERSION import Version
+from .pyrife_ncnn_vulkan_GUI import Pyrife_ncnn_vulkan
+from .pyffmpeg_GUI import Pyffmpeg
+from .libs.confighandler import ConfigHandler
+from .VERSION import Version
 
 class Work:
     def __init__(self, path: str):
@@ -67,7 +67,7 @@ class GUI:
 class Control:
     def __init__(self):
         self.version = Version()        
-        self.work = Work(".\\setting\\config.ini")
+        self.work = Work(".\\config\\config.ini")
         self.GUI = GUI(self.work.list_rifever, self.work.rife.config_data["USER"], self.work.ffmpeg.config_data["USER"], self.version.version)
         self.status = "home"
 
@@ -220,9 +220,3 @@ class Control:
                 break
 
         self.GUI.window.close()
-
-
-if __name__ == "__main__":
-    os.chdir(os.path.dirname(__file__))
-    App = Control()
-    App.run()

@@ -2,7 +2,7 @@ import subprocess
 import glob
 import os
 import shutil
-from lib.confighandler import ConfigHandler
+from .libs.confighandler import ConfigHandler
 
 class Pyffmpeg:
     def __init__(self, config_path: str) -> None:
