@@ -11,8 +11,8 @@ This README is written for Version 2.2 or later; it is not compatible with Versi
 このソフトウェアは趣味の一環として作成されたものです。本ソフトウェアを使用したいかなる結果についても作者は責任を負いません。<br>
 このソフトウェアはMIT LICENSEにて提供されています。MIT LICENSEは添付しているLICENSEを参照してください。<br>
 本ソフトウェアはffmpeg及びffprobeを使用しています。使用しているのはLGPL版であり、動的リンクでの使用としているため本ソフトウェア自体はMIT LICENSEにて公開しています。<br>
-ffmpeg及びffprobeのライセンスは.\lib\ffmpeg\LICENSE_for_FFmpegを参照してください。
-RIFE-ncnn-Vulkanのライセンスは.\lib\rife_ncnn_vulkan\LICENSE_for_RIFE-ncnn-Vulkanを参照してください。
+ffmpeg及びffprobeのライセンスは(root)\libs\ffmpeg\LICENSE_for_FFmpegを参照してください。<br>
+RIFE-ncnn-Vulkanのライセンスは(root)\libs\rife_ncnn_vulkan\LICENSE_for_RIFE-ncnn-Vulkanを参照してください。
 ## 動作(確認済み)環境
 - windows10 or windows11 64bit
 - [Python 3.12](https://www.python.org/)(以前のVerでも動く可能性はあります※未検証)
@@ -27,7 +27,7 @@ RIFE-ncnn-Vulkanのライセンスは.\lib\rife_ncnn_vulkan\LICENSE_for_RIFE-ncn
 
 ## どんなソフトウェア？
 映像の前後コマから間のコマを生成するソフトウェア[RIFE-ncnn-Vulkan](https://github.com/nihui/rife-ncnn-vulkan)をより便利に活用するためのソフトウェアです。<br>
-FFmpegとRIFE-ncnn-Vulkanを組み合わせて、元動画を2倍補完したものを生成します。<br>
+FFmpegとRIFE-ncnn-Vulkanを組み合わせて、元動画を2^n倍補完したものを生成します。<br>
 動作にはWindows環境とそこで動作するPython、外部ライブラリであるPySimpleGUIが必要です。<br>
 Pythonの基本ライブラリとして以下のライブラリを使用しています。
 - `os`
@@ -35,7 +35,6 @@ Pythonの基本ライブラリとして以下のライブラリを使用して�
 - `shutil`
 - `subprocess`
 - `configparser`
-- `tkinter`
 
 お好みのFFmpeg,FFProbeビルドを代わりに使用することも可能です。(ライセンスにはご注意ください)<br>
 
@@ -45,7 +44,7 @@ Pythonの基本ライブラリとして以下のライブラリを使用して�
 - 元映像総フレーム数が2~であるもの
 - 完成後総フレームが~1000000000であるもの(元映像総フレーム × 2^補完回数)
 - 映像が極度に低ビットレートでないもの(効果が薄れます)
-- ファイル名及びファイルパスに` `(半角スペース)、拡張子以外の`.`(ピリオド)があると正しく動作しません
+- ファイル名及びファイルパスに` `(半角スペース)、拡張子以外の`.`(ピリオド)がないもの
 
 ## 使い方
 
@@ -53,7 +52,7 @@ Pythonの基本ライブラリとして以下のライブラリを使用して�
 1. [Python](https://www.python.org/)をインストールします
 2. [PySimpleGUI](https://www.pysimplegui.org/en/latest/)をインストールします
 3. 本プロジェクトの[Release](https://github.com/ike62k/RIFEAutomationToolPython/releases)よりソースコードをインストールします
-4. ルートフォルダ内AppStart.batを実行、もしくはルートフォルダでシェルを起動し`Python -m RIFE_GUI_Python`を実行します
+4. ルートフォルダ内AppStart.batを実行、もしくはルートフォルダでシェルを起動し`Python.exe -m RIFE_GUI_Python`を実行します
 
 ### アプリケーションの操作方法
 本ソフトウェアはPySimpleGUIによるGUIとなっています。<br>
@@ -61,11 +60,12 @@ Pythonの基本ライブラリとして以下のライブラリを使用して�
 
 ## 各種設定について
 本ソフトウェアでは、ユーザーごとの環境に合わせて柔軟に設定を操作できるよう、configファイルを設定しています。<br>
-全てのconfigファイルは.\setting内に存在します。<br>
+全てのconfigファイルは(root)\config内に存在します。<br>
 一切configファイルに手を付けなくても動作しますが、できるだけ環境に合わせてconfigファイルを変更することをおすすめします。<br>
 ソフトウェアを起動した際の初期値としてconfigファイル内の設定値が反映されます。<br>
 これを使用することで普段使う設定を簡単に呼び出すことができます。<br>
-一度ソフトウェアを起動するとconfigファイルを書き換えても内容は変わりません
+一度ソフトウェアを起動するとconfigファイルを書き換えても内容は変わりません<br>
+configファイルの位置を変更、および位置を指定している項目の値を変えることは推奨されません。
 
 ### 共通
 - configファイルは`[DEFAULT]`セクションと`[USER]`セクションによって構成されています。
@@ -73,7 +73,7 @@ Pythonの基本ライブラリとして以下のライブラリを使用して�
 - `[USER]`値が空(`None`)でない場合、ソフトウェアは`[USER]`セクションの値を参照します。
 - **自分自身で設定をする場合は`[USER]`セクションの値のみを書きかえる**ことを推奨します。
 - `[USER]`セクションに`[DEFAULT]`セクションと同様に `key = value`の形で項目を書き込みます
-- `value`の前後のスペースは無視されます。 例) `A = value`と`A=value`は同値です `A = value1 value2`と`A = value1value2`は同値ではありません
+- `value`の前後のスペースは無視されます。 例) `A = hoge`と`A=hoge`は同値です `A = hoge fuga`と`A = hogefuga`は同値ではありません
 
 ### config.ini
 App.py起動用のconfigです。基本的には触らなくて大丈夫です。
@@ -109,6 +109,13 @@ FFmpeg用のconfigです。
     その際に、`shell=True`を使用しています。設定値にシェルがコマンドと誤認識する値があると、シェルインジェクションなどの危険性があります。
 - 著作権で保護された映像の加工及び公開は法律に反する場合があります。作者は責任を負いかねますので、使用方法にはお気をつけください。
 - 動作中は大量の画像フレームが生成される場合があります。特にPNG形式ではFHD画質で1フレームあたり4MBほどのサイズとなります。一時ファイルは基本的にルートフォルダに生成されますので、保存先となるドライブには十分な空きをお持ちください。
+
+## FFmpegを自分で作成したビルド等に置き換える
+本ソフトウェアはFFmpeg.exeとFFprobe.exeを動的に動作させているため、差し替えが可能です。<br>
+(root)\libs\ffmpeg\ffmpeg.exeを差し替えると使用するFFmpegを変更することができます。<br>
+(root)\libs\ffmpeg\ffprobe.exeを差し替えると使用するFFprobeを変更することできます。<br>
+FFmpegは元動画のデコード、および補完後動画のエンコードが可能なビルドに変更してください。<br>
+FFprobeは元動画の情報を解析できるビルドに変更してください。
 
 ## 今アップデートで追加された内容
 - ファイル構成の見直し
