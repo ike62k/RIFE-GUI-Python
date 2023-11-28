@@ -1,15 +1,15 @@
 """
 バージョンに関するファイルです。書き換えないでください。
-ファイル更新日:20231128
+ファイル更新日:20231129
 """
 class Version:
     def __init__(self):
         self.__version = "2.2-GUI"
         self.__subver = "00001"
-        self.__date_App = 20231128
-        self.__date_confighandler = 20231118
-        self.__date_pyffmpeg = 20231128
-        self.__date_pyrife_ncnn_vulkan = 20231128
+        self.__date_App = 20231129
+        self.__date_confighandler = 20231129
+        self.__date_pyffmpeg = 20231129
+        self.__date_pyrife_ncnn_vulkan = 20231129
 
     @property
     def version(self):
