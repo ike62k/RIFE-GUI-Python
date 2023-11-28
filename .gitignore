@@ -1,3 +1,4 @@
-__pycache__/
-/test_movie/*
-/testApp.py
+__pycache__
+/test_movie
+/tests
+.vscode
