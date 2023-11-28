@@ -9,7 +9,7 @@ copyright 2023 びろーど(Veludo)<br>
 ffmpeg及びffprobeのライセンスは.\lib\ffmpeg\LICENSE_for_FFmpegを参照してください。
 RIFE-ncnn-Vulkanのライセンスは.\lib\rife_ncnn_vulkan\LICENSE_for_RIFE-ncnn-Vulkanを参照してください。
 ## 動作(確認済み)環境
-- windows10 or windows11
+- windows10 or windows11 64bit
 - [Python 3.12](https://www.python.org/)(以前のVerでも動く可能性はあります※未検証)
 - [PySimpleGUI](https://www.pysimplegui.org/en/latest/)
 - 画像デコードで使うためCPUパワーがあると処理が早くなります
@@ -48,7 +48,7 @@ Pythonの基本ライブラリとして以下のライブラリを使用して�
 1. [Python](https://www.python.org/)をインストールします
 2. [PySimpleGUI](https://www.pysimplegui.org/en/latest/)をインストールします
 3. 本プロジェクトの[Release](https://github.com/ike62k/RIFEAutomationToolPython/releases)よりソースコードをインストールします
-4. ルートフォルダ内PySimpleGUIApp.pyを実行します
+4. ルートフォルダ内AppStart.batを実行、もしくはルートフォルダでシェルを起動し`Python -m RIFE_GUI_Python`を実行します
 
 ### アプリケーションの操作方法
 本ソフトウェアはPySimpleGUIによるGUIとなっています。<br>
@@ -105,18 +105,12 @@ FFmpeg用のconfigです。
 - 著作権で保護された映像の加工及び公開は法律に反する場合があります。作者は責任を負いかねますので、使用方法にはお気をつけください。
 
 ## 今アップデートで追加された内容
-- GUIの実装
-PySimpleGUIを使用したGUIを実装しました。<br>
-これに伴い、PySimpleGUIが必要要件となります<br>
-また、一部の仕様が変更になりました。
-- パラメータに不備があった際のエラー実装<br>
-GUIで動作することによって、パラメータが正しい形式で入力されていないときのエラーがでるように変更しました。
+- ファイル構成の見直し
+- (前バージョンより可能でしたが)非整数値の動画ファイルの処理に対応
 
 ## 既知の不具合
 - 音声streamを含まない動画が処理できない問題
-- `subprocess`において`shell=True`を使用していることによる誤作動のリスク
-- 整数値以外の秒間フレーム数を持つ動画が処理できない問題
 
 ## 修正及び機能追加予定
 - 音声streamを含まない動画への対応
-- (時期未定)`subprocess`の`shell=True`を使用しない設計へのリファクタリング
+- 2^n倍の処理とするのではなく、整数倍に指定して処理が可能になるように変更
