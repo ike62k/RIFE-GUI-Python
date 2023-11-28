@@ -4,8 +4,8 @@ copyright 2023 びろーど(Veludo)<br>
 RIFE-ncnn-Vulkanによる補完処理、並びにFFmpegによる動画から画像への変換、画像から動画への変換をGUIで操作できるようにしたソフトウェアです。
 This software enables GUI-based operation of the interpolation process by RIFE-ncnn-Vulkan, as well as video-to-image and image-to-video conversion by FFmpeg.
 
-このREADMEはVersion 2.2~ 用に書かれたものです。~Version 2.1との互換性はありません。
-This README is written for Version 2.2~. ~It is not compatible with ~Version 2.1.
+このREADMEはVersion 2.2以降のためにに書かれたものです。Version 2.1以前との互換性はありません。
+This README is written for Version 2.2 or later; it is not compatible with Version 2.1 or earlier.
 
 ## はじめに
 このソフトウェアは趣味の一環として作成されたものです。本ソフトウェアを使用したいかなる結果についても作者は責任を負いません。<br>

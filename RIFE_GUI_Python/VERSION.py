@@ -4,7 +4,7 @@
 """
 class Version:
     def __init__(self):
-        self.__version = "2.2-GUI"
+        self.__version = "2.2.1-GUI"
         self.__subver = "00001"
         self.__date_App = 20231129
         self.__date_confighandler = 20231129
